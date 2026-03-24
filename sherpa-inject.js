@@ -665,9 +665,11 @@
 
   // Wait for DOM
   function inject() {
-    // Hide Weebly default elements
-    var wrapper = document.querySelector('.wrapper');
-    if (wrapper) wrapper.style.display = 'none';
+    // Aggressively hide ALL Weebly default elements via JS
+    var hideSelectors = '.wrapper, .birdseye-header, .nav-wrap, .desktop-nav, .mobile-nav-wrap, .banner-wrap, .wsite-header-section, .main-wrap, .footer-wrap, .wsite-footer, #wsite-content, .wsite-elements, #wsite-menus, .wsite-header-elements, .wsite-header, #header, .header-wrap, .header-inner, .not-found-wrap';
+    document.querySelectorAll(hideSelectors).forEach(function(el) {
+      el.style.cssText = 'display:none!important;visibility:hidden!important;opacity:0!important;height:0!important;overflow:hidden!important;position:absolute!important;pointer-events:none!important;';
+    });
 
     // Create injection container
     var container = document.createElement('div');
