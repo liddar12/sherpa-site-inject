@@ -30,7 +30,7 @@
   // Page content map
   var PAGES = {
   "/": `<section class="page-hero tall" id="home">
-  <div class="page-hero-bg" style="background-image:url('http://www.sherpacapitalgroup.com/uploads/1/2/5/3/12533793/background-images/1361798086.jpg')"></div>
+  <div class="page-hero-bg" style="background-image:url('https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?auto=format&fit=crop&w=1920&q=80')"></div>
   <div class="page-hero-content">
     <div class="hero-logo-mark"><img src="https://i.imgur.com/VGbfFM0.png" alt="Sherpa Capital Group" style="height:90px;width:auto;filter:brightness(0) invert(1);"></div>
     <h1 class="hero-headline">Precision Capital.<br><em>Chicago Roots.</em></h1>
@@ -481,7 +481,7 @@
   </div>
 </section>`,
   "/equity": `<section class="page-hero">
-  <div class="page-hero-bg" style="background-image:url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1920&q=80')"></div>
+  <div class="page-hero-bg" style="background-image:url('https://images.unsplash.com/photo-1462899006636-339e08d1844e?auto=format&fit=crop&w=1920&q=80')"></div>
   <div class="page-hero-content">
     <p class="hero-sub">Strategic Partnerships</p>
     <h1 class="hero-headline">Equity <em>Investments</em></h1>
@@ -541,7 +541,7 @@
   </div>
 </section>`,
   "/contact": `<section class="page-hero">
-  <div class="page-hero-bg" style="background-image:url('https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?auto=format&fit=crop&w=1920&q=80')"></div>
+  <div class="page-hero-bg" style="background-image:url('https://images.unsplash.com/photo-1519501025264-65ba15a82390?auto=format&fit=crop&w=1920&q=80')"></div>
   <div class="page-hero-content">
     <p class="hero-sub">Let's Talk</p>
     <h1 class="hero-headline">Contact <em>Us</em></h1>
@@ -590,7 +590,7 @@
 </section>`,
   "/the-team": `
 <section class="page-hero">
-  <div class="page-hero-bg" style="background-image:url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1920&q=80')"></div>
+  <div class="page-hero-bg" style="background-image:url('https://images.unsplash.com/photo-1486325212027-8081e485255e?auto=format&fit=crop&w=1920&q=80')"></div>
   <div class="page-hero-content">
     <p class="hero-sub">Leadership</p>
     <h1 class="hero-headline">The <em>Team</em></h1>
