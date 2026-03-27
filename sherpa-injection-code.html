@@ -169,6 +169,20 @@ body {
   position: relative;
   z-index: 100;
 }
+/* Fallback mode: un-hide Weebly content when page has no injection route */
+body.sherpa-fallback .wrapper,
+body.sherpa-fallback .main-wrap,
+body.sherpa-fallback #wsite-content,
+body.sherpa-fallback .wsite-elements,
+body.sherpa-fallback .main-wrap .wsite-elements {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  position: static !important;
+  height: auto !important;
+  overflow: visible !important;
+}
 </style>
 <script>
 (function() {
@@ -177,7 +191,7 @@ body {
   "/": `<section class="page-hero tall" id="home">
   <div class="page-hero-bg" style="background-image:url('https://cdn.jsdelivr.net/gh/liddar12/sherpa-site-inject@main/assets/hero-home.jpg')"></div>
   <div class="page-hero-content">
-    <div class="hero-logo-mark"><img src="https://cdn.jsdelivr.net/gh/liddar12/sherpa-site-inject@main/assets/logo.png" alt="Sherpa Capital Group" style="height:90px;width:auto;filter:brightness(0) invert(1);"></div>
+    <div class="hero-logo-mark"><img src="https://cdn.jsdelivr.net/gh/liddar12/sherpa-site-inject@main/assets/logo.png" alt="Sherpa Capital Group" style="height:270px;width:auto;filter:brightness(0) invert(1);"><div style="font-family:var(--font-body);font-size:0.85rem;letter-spacing:0.25em;text-transform:uppercase;color:var(--forest-light);font-weight:600;margin-top:0.5rem;">Sherpa Capital Group</div></div>
     <h1 class="hero-headline">Precision Capital.<br><em>Chicago Roots.</em></h1>
     <div class="hero-divider"></div>
     <p class="hero-tagline">Boutique private equity real estate. Bridge debt and equity investments secured by commercial real estate across Chicago's most dynamic neighborhoods.</p>
@@ -809,15 +823,32 @@ body {
   if (path === '/information') path = '/equity';
 
   var content = PAGES[path];
-  if (!content) return; // Don't inject on pages we don't have content for (e.g. search)
+  var isFallback = !content;
 
   // Wait for DOM
   function inject() {
-    // Aggressively hide ALL Weebly default elements via JS
-    var hideSelectors = '.wrapper, .birdseye-header, .nav-wrap, .desktop-nav, .mobile-nav-wrap, .banner-wrap, .wsite-header-section, .main-wrap, .footer-wrap, .wsite-footer, #wsite-content, .wsite-elements, #wsite-menus, .wsite-header-elements, .wsite-header, #header, .header-wrap, .header-inner, .not-found-wrap';
+    // Aggressively hide Weebly default elements via JS
+    var hideSelectors = isFallback
+      ? '.birdseye-header, .nav-wrap, .desktop-nav, .mobile-nav-wrap, .banner-wrap, .wsite-header-section, .footer-wrap, .wsite-footer, #wsite-menus, .wsite-header-elements, .wsite-header, #header, .header-wrap, .header-inner, .not-found-wrap'
+      : '.wrapper, .birdseye-header, .nav-wrap, .desktop-nav, .mobile-nav-wrap, .banner-wrap, .wsite-header-section, .main-wrap, .footer-wrap, .wsite-footer, #wsite-content, .wsite-elements, #wsite-menus, .wsite-header-elements, .wsite-header, #header, .header-wrap, .header-inner, .not-found-wrap';
     document.querySelectorAll(hideSelectors).forEach(function(el) {
       el.style.cssText = 'display:none!important;visibility:hidden!important;opacity:0!important;height:0!important;overflow:hidden!important;position:absolute!important;pointer-events:none!important;';
     });
+
+    // Fallback: for unmatched pages, keep Weebly content visible but restyle it
+    if (isFallback) {
+      document.body.classList.add('sherpa-fallback');
+      var wrapper = document.querySelector('.wrapper');
+      if (wrapper) wrapper.style.cssText = 'display:block!important;visibility:visible!important;opacity:1!important;position:static!important;height:auto!important;overflow:visible!important;';
+      var mainWrap = document.querySelector('.main-wrap');
+      if (mainWrap) mainWrap.style.cssText = 'display:block!important;visibility:visible!important;padding-top:100px;max-width:1200px;margin:0 auto;padding-left:2rem;padding-right:2rem;padding-bottom:4rem;';
+      var wContent = document.querySelector('#wsite-content');
+      if (wContent) wContent.style.cssText = 'display:block!important;visibility:visible!important;opacity:1!important;';
+      // Also show wsite-elements inside the content
+      document.querySelectorAll('.main-wrap .wsite-elements').forEach(function(el) {
+        el.style.cssText = 'display:block!important;visibility:visible!important;opacity:1!important;';
+      });
+    }
 
     // Create injection container
     var container = document.createElement('div');
@@ -838,7 +869,7 @@ body {
     }).join('\n');
 
     var navHtml = '<nav class="nav" id="nav">' +
-      '<a href="/" class="nav-logo"><img src="https://cdn.jsdelivr.net/gh/liddar12/sherpa-site-inject@main/assets/logo.png" alt="Sherpa Capital Group" style="height:50px;width:auto;filter:brightness(0) invert(1);"></a>' +
+      '<a href="/" class="nav-logo"><img src="https://cdn.jsdelivr.net/gh/liddar12/sherpa-site-inject@main/assets/logo.png" alt="Sherpa Capital Group" style="height:70px;width:auto;filter:brightness(0) invert(1);"><span style="font-size:0.65rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--forest-light);font-weight:600;white-space:nowrap;">Sherpa Capital<br>Group</span></a>' +
       '<ul class="nav-links" id="navLinks">' + navLinksHtml + '</ul>' +
       '<button class="nav-toggle" onclick="toggleNav()"><span></span><span></span><span></span></button>' +
       '</nav>';
@@ -852,8 +883,19 @@ body {
       '<li><a href="/contact">Contact</a></li>' +
       '</ul></div></footer>';
 
-    container.innerHTML = navHtml + content + footerHtml;
-    document.body.appendChild(container);
+    if (isFallback) {
+      // Fallback: inject nav at top, footer at bottom, keep Weebly page content
+      var navContainer = document.createElement('div');
+      navContainer.id = 'sherpa-inject';
+      navContainer.innerHTML = navHtml;
+      document.body.insertBefore(navContainer, document.body.firstChild);
+      var footerContainer = document.createElement('div');
+      footerContainer.innerHTML = footerHtml;
+      document.body.appendChild(footerContainer);
+    } else {
+      container.innerHTML = navHtml + content + footerHtml;
+      document.body.appendChild(container);
+    }
 
     // Initialize nav scroll behavior
     var nav = document.getElementById('nav');
