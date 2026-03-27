@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sherpa Capital Group — Preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root{--forest:#2E7D32;--forest-deep:#1B5E20;--forest-light:#4CAF50;--slate-900:#0F172A;--slate-800:#1E293B;--slate-700:#334155;--slate-400:#94A3B8;--slate-300:#CBD5E1;--slate-200:#E2E8F0;--slate-100:#F1F5F9;--cream:#FAFAF8;--white:#FFFFFF;--font-display:'Cormorant Garamond',Georgia,serif;--font-body:'DM Sans',-apple-system,sans-serif;--ease:cubic-bezier(0.16,1,0.3,1)}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;font-size:16px}
+body{font-family:var(--font-body);color:var(--slate-800);background:var(--cream);line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+
+/* NAV */
+.nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:0 clamp(1.5rem,4vw,4rem);height:80px;display:flex;align-items:center;justify-content:space-between;background:rgba(15,23,42,0.0);backdrop-filter:blur(0px);transition:all 0.5s var(--ease);border-bottom:1px solid rgba(255,255,255,0.0)}
+.nav.scrolled{background:rgba(15,23,42,0.95);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,0.08);height:70px}
+.nav-logo{display:flex;align-items:center;gap:0.75rem;text-decoration:none;color:var(--white)}
+.nav-links{display:flex;align-items:center;gap:2.2rem;list-style:none}
+.nav-links a{color:rgba(255,255,255,0.8);text-decoration:none;font-size:0.78rem;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;transition:color 0.3s;position:relative}
+.nav-links a::after{content:'';position:absolute;bottom:-4px;left:0;width:0;height:1px;background:var(--forest-light);transition:width 0.3s var(--ease)}
+.nav-links a:hover{color:var(--white)}
+.nav-links a:hover::after{width:100%}
+.nav-links a.active{color:var(--white)}
+.nav-links a.active::after{width:100%}
+.nav-toggle{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px;background:none;border:none}
+.nav-toggle span{width:24px;height:2px;background:var(--white);transition:all 0.3s}
+
+/* PAGE HERO */
+.page-hero{position:relative;height:45vh;min-height:340px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.page-hero.tall{height:65vh;min-height:500px}
+.page-hero-bg{position:absolute;inset:0;background-size:cover;background-position:center 30%}
+.page-hero-bg::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(15,23,42,0.7) 0%,rgba(15,23,42,0.5) 50%,rgba(15,23,42,0.85) 100%)}
+.page-hero-content{position:relative;z-index:2;text-align:center;padding:0 2rem;max-width:800px;animation:fadeUp 1.2s var(--ease) both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+.hero-logo-mark{margin-bottom:1.5rem}
+.hero-headline{font-family:var(--font-display);font-size:clamp(2.2rem,5vw,3.8rem);font-weight:400;color:var(--white);line-height:1.15;margin-bottom:0.5rem;letter-spacing:-0.01em}
+.hero-headline em{font-style:italic;color:var(--forest-light)}
+.hero-sub{font-family:var(--font-body);font-size:0.8rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--slate-400);margin-bottom:1.5rem}
+.hero-divider{width:60px;height:1px;background:var(--forest-light);margin:0 auto 1.5rem;animation:divGrow 1.5s var(--ease) 0.5s both}
+@keyframes divGrow{from{width:0;opacity:0}to{width:60px;opacity:1}}
+.hero-tagline{font-size:1rem;color:rgba(255,255,255,0.7);max-width:520px;margin:0 auto;line-height:1.7}
+
+/* SECTIONS */
+.section{padding:clamp(4rem,8vw,7rem) clamp(1.5rem,5vw,6rem)}
+.section-label{font-size:0.7rem;letter-spacing:0.25em;text-transform:uppercase;color:var(--forest);font-weight:600;margin-bottom:1rem}
+.section-heading{font-family:var(--font-display);font-size:clamp(2rem,4vw,3rem);font-weight:400;color:var(--slate-900);line-height:1.2;margin-bottom:1.5rem}
+.section-heading em{font-style:italic}
+.container{max-width:1200px;margin:0 auto}
+.bg-white{background:var(--white)}
+.bg-cream{background:var(--cream)}
+.bg-dark{background:var(--slate-900);color:var(--white)}
+.bg-dark .section-label{color:var(--forest-light)}
+.bg-dark .section-heading{color:var(--white)}
+
+/* GRID UTILS */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:2rem}
+
+/* ABOUT STATS */
+.about-stats{display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-top:2.5rem;padding-top:2.5rem;border-top:1px solid var(--slate-200)}
+.stat-number{font-family:var(--font-display);font-size:2.8rem;font-weight:400;color:var(--forest);line-height:1;margin-bottom:0.3rem}
+.stat-label{font-size:0.8rem;color:var(--slate-400);letter-spacing:0.05em;text-transform:uppercase}
+
+/* CONTENT TEXT */
+.content-text{color:var(--slate-700);font-size:1.05rem;line-height:1.8}
+.content-text p{margin-bottom:1.5rem}
+
+/* IMAGE WITH ACCENT */
+.img-frame{position:relative;overflow:hidden}
+.img-frame img{width:100%;height:100%;object-fit:cover;filter:saturate(0.8);transition:transform 0.8s var(--ease)}
+.img-frame:hover img{transform:scale(1.03)}
+.img-accent{position:absolute;top:-12px;left:-12px;width:80px;height:80px;border-top:2px solid var(--forest);border-left:2px solid var(--forest)}
+
+/* CARDS */
+.card{position:relative;padding:2.5rem;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);transition:all 0.5s var(--ease);overflow:hidden}
+.card::before{content:'';position:absolute;top:0;left:0;width:3px;height:0;background:var(--forest);transition:height 0.5s var(--ease)}
+.card:hover{background:rgba(255,255,255,0.06);border-color:rgba(255,255,255,0.1);transform:translateY(-4px)}
+.card:hover::before{height:100%}
+.card-title{font-family:var(--font-display);font-size:1.5rem;font-weight:500;margin-bottom:0.75rem;color:var(--white)}
+.card-desc{color:var(--slate-400);font-size:0.95rem;line-height:1.7}
+.card-list{list-style:none;padding:0;margin-top:1rem}
+.card-list li{padding:0.5rem 0;border-top:1px solid rgba(255,255,255,0.05);color:var(--slate-300);font-size:0.85rem;display:flex;align-items:center;gap:0.75rem}
+.card-list li::before{content:'';width:4px;height:4px;background:var(--forest-light);border-radius:50%;flex-shrink:0}
+
+/* PARAM GRID */
+.param-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border:1px solid var(--slate-200)}
+.param-item{padding:2.5rem;border-right:1px solid var(--slate-200);border-bottom:1px solid var(--slate-200);transition:background 0.3s}
+.param-item:hover{background:var(--slate-100)}
+.param-item:nth-child(3n){border-right:none}
+.param-label{font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--slate-400);margin-bottom:0.5rem}
+.param-value{font-family:var(--font-display);font-size:1.5rem;color:var(--slate-900);font-weight:500}
+
+/* FUNDED LOANS GRID */
+.funded-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem}
+.funded-card{position:relative;overflow:hidden;aspect-ratio:4/3;background:var(--slate-200)}
+.funded-card img{width:100%;height:100%;object-fit:cover;filter:saturate(0.7) brightness(0.85);transition:all 0.6s var(--ease)}
+.funded-card:hover img{filter:saturate(0.9) brightness(0.7);transform:scale(1.05)}
+.funded-overlay{position:absolute;inset:0;background:linear-gradient(0deg,rgba(15,23,42,0.9) 0%,rgba(15,23,42,0.1) 50%);display:flex;flex-direction:column;justify-content:flex-end;padding:1.5rem}
+.funded-label{font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--forest-light);margin-bottom:0.3rem}
+.funded-title{font-family:var(--font-display);font-size:1.15rem;color:var(--white);font-weight:500;line-height:1.3}
+
+/* CONTACT */
+.contact-grid{display:flex;justify-content:center;gap:4rem;flex-wrap:wrap;margin-top:3rem}
+.contact-item{text-align:center}
+.contact-item-label{font-size:0.7rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--slate-400);margin-bottom:0.5rem}
+.contact-item-value{font-family:var(--font-display);font-size:1.2rem;color:var(--white)}
+.contact-item-value a{color:var(--white);text-decoration:none;border-bottom:1px solid rgba(255,255,255,0.2);transition:border-color 0.3s}
+.contact-item-value a:hover{border-color:var(--forest-light)}
+
+/* BUTTONS */
+.btn-primary{display:inline-block;padding:1rem 3rem;background:var(--forest);color:var(--white);text-decoration:none;font-size:0.8rem;font-weight:600;letter-spacing:0.15em;text-transform:uppercase;border:none;cursor:pointer;transition:all 0.3s var(--ease)}
+.btn-primary:hover{background:var(--forest-deep);transform:translateY(-2px);box-shadow:0 8px 30px rgba(46,125,50,0.3)}
+
+/* FOOTER */
+.footer{background:var(--slate-900);border-top:1px solid rgba(255,255,255,0.06);padding:2.5rem clamp(1.5rem,5vw,6rem)}
+.footer-inner{max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;align-items:center}
+.footer-copy{font-size:0.8rem;color:var(--slate-400)}
+.footer-links{display:flex;gap:2rem;list-style:none}
+.footer-links a{color:var(--slate-400);text-decoration:none;font-size:0.8rem;transition:color 0.3s}
+.footer-links a:hover{color:var(--white)}
+
+/* REVEAL */
+.reveal{opacity:0;transform:translateY(40px);transition:opacity 0.8s var(--ease),transform 0.8s var(--ease)}
+.reveal.visible{opacity:1;transform:translateY(0)}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+.nav-links{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(15,23,42,0.98);flex-direction:column;justify-content:center;gap:2rem;padding:2rem;z-index:999}
+.nav-links.open{display:flex}
+.nav-toggle{display:flex}
+.grid-2{grid-template-columns:1fr}
+.grid-3,.funded-grid{grid-template-columns:1fr 1fr}
+.param-grid{grid-template-columns:1fr 1fr}
+.param-item:nth-child(3n){border-right:1px solid var(--slate-200)}
+.param-item:nth-child(2n){border-right:none}
+.footer-inner{flex-direction:column;gap:1.5rem;text-align:center}
+}
+@media(max-width:600px){
+.funded-grid{grid-template-columns:1fr}
+.param-grid{grid-template-columns:1fr}
+.param-item{border-right:none !important}
+.page-hero{height:40vh;min-height:300px}
+.page-hero.tall{height:55vh;min-height:420px}
+.contact-grid{gap:2rem}
+}
+
+/* === WEEBLY OVERRIDE === */
+.wrapper, .birdseye-header, .nav-wrap, .desktop-nav, .mobile-nav-wrap,
+.banner-wrap, .wsite-header-section, .main-wrap,
+.footer-wrap, .wsite-footer,
+#wsite-content, .wsite-elements,
+#wsite-menus, .wsite-menu-default, .wsite-menu-wrap,
+.header-wrap, #header, .birdseye-header *,
+.wsite-mobile-menu, .wsite-header-elements,
+.wsite-header, .header-inner,
+.not-found-wrap, .wsite-not-found,
+.wsite-header-section .wsite-section-wrap,
+.banner-wrap .wsite-section-wrap,
+#wsite-title, .wsite-logo, .wsite-title-container {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+body {
+  background: var(--cream) !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+#sherpa-inject {
+  display: block !important;
+  position: relative;
+  z-index: 100;
+}
+/* Preview mode: force all reveals visible */
+.reveal { opacity: 1 !important; transform: none !important; }
+/* Preview banner */
+.preview-banner { position: fixed; bottom: 0; left: 0; right: 0; z-index: 9999; background: #2E7D32; color: white; text-align: center; padding: 10px 20px; font-family: 'DM Sans', sans-serif; font-size: 13px; letter-spacing: 0.05em; display: flex; align-items: center; justify-content: center; gap: 12px; }
+.preview-banner a { color: white; text-decoration: underline; }
+.preview-banner .dismiss { cursor: pointer; opacity: 0.7; margin-left: 12px; }
+</style>
+</head>
+<body>
+<div id="sherpa-inject">
+<nav class="nav scrolled" id="nav">
+<a href="index.html" class="nav-logo"><img src="assets/logo.png" alt="Sherpa Capital Group" style="height:50px;width:auto;filter:brightness(0) invert(1);"></a>
+<ul class="nav-links" id="navLinks">
+<li><a href="index.html">Home</a></li>
+<li><a href="the-team.html" class="active">The Team</a></li>
+<li><a href="loan-parameters.html">Bridge Loans</a></li>
+<li><a href="funded-loans.html">Funded Loans</a></li>
+<li><a href="equity.html">Equity</a></li>
+<li><a href="contact.html">Contact</a></li>
+</ul>
+<button class="nav-toggle" onclick="toggleNav()"><span></span><span></span><span></span></button>
+</nav>
+<section class="page-hero">
+  <div class="page-hero-bg" style="background-image:url('assets/hero-bridge.jpg')"></div>
+  <div class="page-hero-content">
+    <p class="hero-sub">Leadership</p>
+    <h1 class="hero-headline">The <em>Team</em></h1>
+  </div>
+</section>
+
+<section class="section bg-white">
+  <div class="container">
+    <div class="content-text reveal" style="text-align:center;max-width:800px;margin:0 auto 3rem">
+      <p style="font-size:1.15rem;line-height:1.9">Sherpa Capital Group, LLC is comprised of a team with more than 35 years of combined real estate lending experience. Our management team has a proven multi-year track record of originating, structuring and funding real estate transactions.</p>
+    </div>
+
+    <div class="grid-2" style="margin-bottom:4rem">
+      <div class="img-frame reveal" style="aspect-ratio:3/4">
+        <img src="http://www.sherpacapitalgroup.com/uploads/1/2/5/3/12533793/published/ashish-parikh-sherpa-capital-group.jpg?1554828922" alt="Ashish Parikh" loading="lazy">
+      </div>
+      <div class="reveal">
+        <p class="section-label">Managing Principal</p>
+        <h2 class="section-heading">Ashish <em>Parikh</em></h2>
+        <div class="content-text">
+          <p>Ashish Parikh has been in Chicago's real estate industry since 1995. He received his Bachelor of Science in Finance from Purdue University (1995). After graduating from Purdue, he joined the land and home development group at Zale Homes working on a 3,000 acre development in the northern suburbs of Chicago.</p>
+          <p>While at Zale Homes, he furthered his education with an M.B.A. with a concentration in Finance from Loyola University. Thereafter, he joined Amresco Capital as an originations analyst in the real estate lending sector. After Amresco, he joined Heller Financial where he was on the portfolio side monitoring a portfolio of structured real estate mortgages.</p>
+          <p>With the desire to return to the production side of mortgage lending, he joined Inland Western Retail Real Estate Trust Inc, where he originated mortgage transactions on retail shopping centers throughout the country. Most recently, he co-founded Sherpa Capital Group.</p>
+        </div>
+        <div style="margin-top:1.5rem">
+          <p style="font-size:0.85rem;color:var(--slate-400)"><a href="mailto:info@sherpacapitalgroup.com" style="color:var(--forest);text-decoration:none">info@sherpacapitalgroup.com</a> &nbsp;|&nbsp; P 312-602-6211</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="reveal">
+        <p class="section-label">Managing Principal</p>
+        <h2 class="section-heading">Rahul <em>Shah</em></h2>
+        <div class="content-text">
+          <p>Rahul Shah has been in the real estate industry since 1999. He received his Bachelor of Science in Finance from University of Illinois – Champaign (1999). After graduating, he joined Inland Western Retail Real Estate Trust, Inc. – a publicly traded REIT.</p>
+          <p>While at Inland Western, Rahul was a senior member of the acquisitions team and was directly responsible for acquiring, structuring, negotiating and underwriting over $4.5 billion of commercial real estate assets. He also furthered his education with an M.B.A. from DePaul University.</p>
+          <p>Most recently, he co-founded Sherpa Capital Group.</p>
+        </div>
+        <div style="margin-top:1.5rem">
+          <p style="font-size:0.85rem;color:var(--slate-400)"><a href="mailto:info@sherpacapitalgroup.com" style="color:var(--forest);text-decoration:none">info@sherpacapitalgroup.com</a> &nbsp;|&nbsp; P 312-602-6212</p>
+        </div>
+      </div>
+      <div class="img-frame reveal" style="aspect-ratio:3/4">
+        <img src="http://www.sherpacapitalgroup.com/uploads/1/2/5/3/12533793/rahul-shah-sherpa-capital-group_orig.jpg" alt="Rahul Shah" loading="lazy">
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section bg-dark" style="text-align:center">
+  <div class="container">
+    <p class="section-label reveal">Work With Us</p>
+    <h2 class="section-heading reveal">Ready to Discuss<br><em>Your Next Deal?</em></h2>
+    <p class="reveal" style="color:var(--slate-400);max-width:500px;margin:0 auto 2rem">Our team is directly accessible. We evaluate every opportunity on its merits.</p>
+    <p class="reveal"><a href="contact.html" class="btn-primary">Contact Us</a></p>
+  </div>
+</section>
+<footer class="footer"><div class="footer-inner">
+<p class="footer-copy">&copy; 2026 Sherpa Capital Group LLC. All rights reserved.</p>
+<ul class="footer-links">
+<li><a href="index.html">Home</a></li>
+<li><a href="loan-parameters.html">Bridge Loans</a></li>
+<li><a href="equity.html">Equity</a></li>
+<li><a href="contact.html">Contact</a></li>
+</ul></div></footer>
+</div>
+
+<div class="preview-banner" id="previewBanner">
+    &#9888; PREVIEW MODE — This is how the site will look after deploying to Weebly
+    <span class="dismiss" onclick="document.getElementById('previewBanner').style.display='none'">&times;</span>
+</div>
+
+<script>
+// Nav scroll behavior
+var nav = document.getElementById('nav');
+window.addEventListener('scroll', function() {
+  nav.classList.toggle('scrolled', window.scrollY > 60);
+});
+// Mobile nav toggle
+window.toggleNav = function() {
+  document.getElementById('navLinks').classList.toggle('open');
+};
+// Reveal animations
+var ro = new IntersectionObserver(function(entries) {
+  entries.forEach(function(en, i) {
+    if (en.isIntersecting) {
+      setTimeout(function() { en.target.classList.add('visible'); }, i * 80);
+      ro.unobserve(en.target);
+    }
+  });
+}, { threshold: 0.15 });
+document.querySelectorAll('.reveal').forEach(function(el) { ro.observe(el); });
+</script>
+</body>
+</html>
