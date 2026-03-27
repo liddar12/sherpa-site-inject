@@ -32,7 +32,7 @@
   "/": `<section class="page-hero tall" id="home">
   <div class="page-hero-bg" style="background-image:url('https://cdn.jsdelivr.net/gh/liddar12/sherpa-site-inject@main/assets/hero-home.jpg')"></div>
   <div class="page-hero-content">
-    <div class="hero-logo-mark"><img src="https://cdn.jsdelivr.net/gh/liddar12/sherpa-site-inject@main/assets/logo-full.jpg" alt="Sherpa Capital Group" style="height:270px;width:auto;"></div>
+    <div class="hero-logo-mark"><img src="https://cdn.jsdelivr.net/gh/liddar12/sherpa-site-inject@main/assets/logo-full.png" alt="Sherpa Capital Group" style="height:270px;width:auto;"></div>
     <h1 class="hero-headline">Precision Capital.<br><em>Chicago Roots.</em></h1>
     <div class="hero-divider"></div>
     <p class="hero-tagline">Boutique private equity real estate. Bridge debt and equity investments secured by commercial real estate across Chicago's most dynamic neighborhoods.</p>
