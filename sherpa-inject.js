@@ -590,7 +590,7 @@
 </section>`,
   "/the-team": `
 <section class="page-hero">
-  <div class="page-hero-bg" style="background-image:url('https://cdn.jsdelivr.net/gh/liddar12/sherpa-site-inject@main/assets/hero-bridge.jpg')"></div>
+  <div class="page-hero-bg" style="background-image:url('https://cdn.jsdelivr.net/gh/liddar12/sherpa-site-inject@main/assets/hero-team.jpg')"></div>
   <div class="page-hero-content">
     <p class="hero-sub">Leadership</p>
     <h1 class="hero-headline">The <em>Team</em></h1>
