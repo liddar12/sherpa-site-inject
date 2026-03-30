@@ -6,7 +6,7 @@
 
 const STORYBLOK_TOKEN = '0c2CL470mDGLNHiNrQzEsgtt';
 const API_BASE = 'https://api.storyblok.com/v2/cdn';
-const ASSET_BASE = 'https://cdn.jsdelivr.net/gh/liddar12/sherpa-site-inject@main/assets';
+const ASSET_BASE = 'https://a.storyblok.com/f/291512806597839';
 
 // ── Storyblok editable attribute ──
 function sbEdit(blok) {
@@ -59,8 +59,8 @@ function renderRichtext(doc) {
 // ── Component renderers ──
 const renderers = {
   hero(blok) {
-    const bgImg = blok.background_image?.filename || `${ASSET_BASE}/hero-home.jpg`;
-    const logo = blok.show_logo ? `<div class="hero-logo-mark"><img src="${ASSET_BASE}/logo.png" alt="Sherpa Capital Group" style="height:200px;width:auto;filter:brightness(0) invert(1);"></div>` : '';
+    const bgImg = blok.background_image?.filename || 'https://a.storyblok.com/f/291512806597839/719069/0f966975e7/hero-home.jpg';
+    const logo = blok.show_logo ? `<div class="hero-logo-mark"><img src="https://a.storyblok.com/f/291512806597839/38141/e7e79645aa/logo.png" alt="Sherpa Capital Group" style="height:200px;width:auto;filter:brightness(0) invert(1);"></div>` : '';
     const label = blok.label ? `<p class="hero-sub">${blok.label}</p>` : '';
     return `
     <section class="page-hero${blok.show_logo ? ' tall' : ''}"${sbAttr(blok)}>
@@ -210,7 +210,7 @@ function renderNav(currentSlug) {
   }).join('\n');
 
   return `<nav class="nav scrolled" id="nav">
-    <a href="/" class="nav-logo"><img src="${ASSET_BASE}/logo.png" alt="Sherpa Capital Group" style="height:70px;width:auto;filter:brightness(0) invert(1);"></a>
+    <a href="/" class="nav-logo"><img src="https://a.storyblok.com/f/291512806597839/38141/e7e79645aa/logo.png" alt="Sherpa Capital Group" style="height:70px;width:auto;filter:brightness(0) invert(1);"></a>
     <ul class="nav-links" id="navLinks">${navLinks}</ul>
     <button class="nav-toggle" onclick="toggleNav()"><span></span><span></span><span></span></button>
   </nav>`;
@@ -268,7 +268,7 @@ async function renderFundedLoansPage() {
   const html = `
     ${renderNav('funded-loans')}
     <section class="page-hero">
-      <div class="page-hero-bg" style="background-image:url('${ASSET_BASE}/hero-funded.jpg')"></div>
+      <div class="page-hero-bg" style="background-image:url('https://a.storyblok.com/f/291512806597839/482907/8ff4682c73/hero-funded.jpg')"></div>
       <div class="page-hero-content">
         <p class="hero-sub">Our Portfolio</p>
         <h1 class="hero-headline">Funded <em>Loans</em></h1>
