@@ -1,0 +1,6 @@
+# SPA routing — all paths serve index.html (except static assets and admin)
+/admin/*    /admin/:splat    200
+/css/*      /css/:splat      200
+/js/*       /js/:splat       200
+/assets/*   /assets/:splat   200
+/*          /index.html      200
