@@ -255,14 +255,14 @@ async function renderFundedLoansPage() {
     const c = loan.content;
     const img = c.image?.filename || '';
     return `
-    <div class="funded-card"${sbAttr(c)}>
+    <a href="/${loan.full_slug}" class="funded-card"${sbAttr(c)}>
       ${img ? `<img src="${img}" alt="${loan.name}" loading="lazy" onerror="this.style.display='none'">` : ''}
       <div class="funded-overlay">
         <div class="funded-label">${c.deal_type ? c.deal_type.replace('_',' ').toUpperCase() : 'BRIDGE LOAN'}</div>
         <div class="funded-title">${loan.name}</div>
         <div style="font-size:0.75rem;color:var(--slate-400);margin-top:0.2rem">${c.location || ''}</div>
       </div>
-    </div>`;
+    </a>`;
   }).join('');
 
   const html = `
@@ -295,6 +295,93 @@ async function renderFundedLoansPage() {
   initScrollBehavior();
   initRevealAnimations();
 }
+
+// ── Funded Loan detail page ──
+async function renderFundedLoanDetail(slug) {
+  try {
+    const resp = await fetch(`${API_BASE}/stories/funded-loans/${slug}?token=${STORYBLOK_TOKEN}&version=draft`);
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    const data = await resp.json();
+    const loan = data.story;
+    const c = loan.content;
+    const img = c.image?.filename || '';
+    const dealLabel = c.deal_type ? c.deal_type.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()) : 'Bridge Loan';
+
+    const html = `
+      ${renderNav('funded-loans')}
+      <section class="page-hero" style="min-height:50vh">
+        <div class="page-hero-bg" style="background-image:url('${img || 'https://a.storyblok.com/f/291512806597839/482907/8ff4682c73/hero-funded.jpg'}')"></div>
+        <div class="page-hero-content">
+          <p class="hero-sub">${dealLabel}</p>
+          <h1 class="hero-headline" style="font-size:clamp(1.6rem,3.5vw,2.8rem)">${loan.name}</h1>
+          ${c.location ? `<p style="color:var(--slate-300);margin-top:0.5rem;font-family:var(--font-display);font-size:1.1rem">${c.location}</p>` : ''}
+        </div>
+      </section>
+      <section class="section bg-white">
+        <div class="container" style="max-width:900px">
+          <div class="reveal" style="display:flex;gap:3rem;flex-wrap:wrap">
+            ${img ? `<div style="flex:1;min-width:280px"><div class="img-frame" style="aspect-ratio:4/3"><img src="${img}" alt="${loan.name}" loading="lazy"></div></div>` : ''}
+            <div style="flex:1;min-width:280px">
+              <p class="section-label">${dealLabel}</p>
+              <h2 class="section-heading" style="font-size:1.8rem">${loan.name}</h2>
+              ${c.location ? `<p style="color:var(--slate-400);margin-bottom:1.5rem;font-family:var(--font-display)">${c.location}</p>` : ''}
+              <div class="content-text">${renderRichtext(c.description)}</div>
+            </div>
+          </div>
+          <div class="reveal" style="margin-top:3rem;text-align:center">
+            <a href="/funded-loans" class="btn-primary" style="margin-right:1rem">&larr; All Funded Loans</a>
+            <a href="/contact" class="btn-primary" style="background:transparent;border:1px solid var(--forest);color:var(--forest)">Discuss a Deal</a>
+          </div>
+        </div>
+      </section>
+      ${renderFooter()}`;
+
+    document.getElementById('app').innerHTML = html;
+    document.title = `${loan.name} — Sherpa Capital Group`;
+    initScrollBehavior();
+    initRevealAnimations();
+  } catch (err) {
+    // If story not found, redirect to funded loans grid
+    window.history.replaceState({}, '', '/funded-loans');
+    renderFundedLoansPage();
+  }
+}
+
+// ── Weebly URL aliases ──
+const WEEBLY_REDIRECTS = {
+  'cre-bridge-loan-atlanta-georgia---hotel-acquisition': 'funded-loans/cre-bridge-loan-atlanta-georgia-hotel-acquisition',
+  'cre-bridge-loan-buffalo-new-york---mixed-use-refinance': 'funded-loans/cre-bridge-loan-buffalo-new-york-mixed-use-refinance',
+  'chicago---acquisition-and-rehab-loan-of-2-apartment-buildings': 'funded-loans/chicago-acquisition-and-rehab-loan-of-2-apartment-buildings-',
+  'chicago-bucktown---condo-building-construction-financing': 'funded-loans/chicago-bucktown-condo-building-ground-up-construction-finan',
+  'chicago-bridgeport--construction-financing-for-single-family-home-development': 'funded-loans/chicago-bridgeport-construction-financing-for-single-family-',
+  'chicago-north-side---broken-condo-bulk-acquisition-and-rehab-loan': 'funded-loans/north-side-chicago-broken-condo-bulk-acquisition-and-rehab-l',
+  'chicago-north-side---acquisition-and-rehab-financing---5-single-family-homes': 'funded-loans/chicago-north-side-acquisition-and-rehab-financing-5-single-',
+  'chicago-north-side---spec-single-family-home-construction-financing': 'funded-loans/chicago-north-side-spec-single-family-construction-financing',
+  'chicago-kinzie-corridorwest-loop-ndash-loft-office-building': 'funded-loans/chicago-kinzie-corridor-west-loop-loft-office-building',
+  'southside---bronzeville---chicago---broken-condo-financing': 'funded-loans/southside-bronzeville-chicago-broken-condo-financing',
+  'south-suburb-of-chicago---luxury-home-acquisition-and-rehab': 'funded-loans/south-suburb-of-chicago-luxury-home-acquisition-and-rehab',
+  'south-suburb-of-chicago---acquisition-and-rehab-loan-of-apartment-building': 'funded-loans/south-suburb-of-chicago-acquisition-and-rehab-loan-of-apartm',
+  'northwest-suburbs-of-chicago--spec-single-family-construction-financing': 'funded-loans/northwest-suburbs-of-chicago-spec-single-family-construction',
+  'palatine-ndash-land-development-17-improved-lots': 'funded-loans/palatine-land-development-17-improved-lots',
+  'western-suburb-of-chicago---refinance-multiple-properties': 'funded-loans/western-suburb-of-chicago-refinance-of-multiple-properties',
+  'western-suburb-of-chicago---refinance-of-spec-home': 'funded-loans/western-suburb-of-chicago-refinance-of-spec-home',
+  'western-suburb-of-chicago---construction-financing-new-homes': 'funded-loans/western-suburb-of-chicago-construction-financing-new-homes',
+  'western-suburbs-of-chicago---acquisition-and-rehab-financing---3-single-family-homes': 'funded-loans/western-suburbs-of-chicago-acquisition-and-rehab-financing-3',
+  'chicago-lincoln-park---elston-corridor-ndash-office-building-developmen-loan': 'funded-loans/chicago-lincoln-park-elston-corridor-office-building-develop',
+  'flint-michigan--self-storage-facility': 'funded-loans/flint-michigan-detroit-self-storage-facility',
+  'glenview-and-wheaton---acquisition-and-rehab-financing---2-single-family-homes': 'funded-loans/glenview-and-wheaton-acquisition-and-rehab-financing-2-singl',
+  'glenview---acquisition-and-rehab-financing---luxury-single-family-home': 'funded-loans/glenview-acquisition-and-rehab-financing-luxury-single-famil',
+  'lake-bluff---acquisition-and-rehab-financing---luxury-single-family-home': 'funded-loans/lake-bluff-acquisition-and-rehab-financing-luxury-single-fam',
+  'lake-bluff---acquisition-and-rehab-financing---single-family-home': 'funded-loans/lake-bluff-acquisition-and-rehab-financing-single-family-hom',
+  'romeoville-ndash-value-add-retail-center': 'funded-loans/romeoville-value-add-retail-center',
+  'norwood-park---chicago-northwest-side---acquisition-and-construction-financing': 'funded-loans/norwood-park-chicago-northwest-side-acquisition-and-construc',
+  'cre-bridge-loan-cincinatti-ohio-airport---industrial-land-acquisition': 'funded-loans/cre-bridge-loan-cincinatti-ohio-airport-industrial-land-acqu',
+  'cre-bridge-loan-el-paso-texas---medical-office-building': 'funded-loans/cre-bridge-loan-el-paso-texas-medical-office-building',
+  'cre-bridge-loan-fort-myers-florida---motel-acquisition-and-rehab-loan': 'funded-loans/cre-bridge-loan-fort-myers-florida-motel-acquisition-and-reh',
+  'bridge-land-loan---buffalo-new-york': 'funded-loans/bridge-land-loan-buffalo-new-york',
+  'office-bridge-acquisition-loan-ndash-oak-brook-illinois': 'funded-loans/office-bridge-acquisition-loan-oak-brook-illinois',
+  'chicago-bucktown---wicker-park---luxury-home-construction-financing': 'funded-loans/chicago-lakeview-wrigleyville-acquisition-loan-for-mixed-use',
+};
 
 // ── Team page (special: pulls team members) ──
 async function renderTeamPage() {
@@ -351,9 +438,21 @@ async function loadPage() {
   let path = window.location.pathname.replace(/\.html$/, '').replace(/^\//, '').replace(/\/$/, '');
   if (!path || path === 'index') path = 'home';
 
+  // Weebly URL redirects (old deal page URLs)
+  if (WEEBLY_REDIRECTS[path]) {
+    path = WEEBLY_REDIRECTS[path];
+    window.history.replaceState({}, '', '/' + path);
+  }
+
   // Special pages with folder content
   if (path === 'funded-loans') return renderFundedLoansPage();
   if (path === 'the-team') return renderTeamPage();
+
+  // Funded loan detail pages
+  if (path.startsWith('funded-loans/')) {
+    const slug = path.replace('funded-loans/', '');
+    return renderFundedLoanDetail(slug);
+  }
 
   // Alias
   if (path === 'information') path = 'equity';
