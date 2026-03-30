@@ -3,14 +3,23 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sherpa Capital Group — Site Preview</title>
+<title>Sherpa Capital Group</title>
+<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 <meta http-equiv="refresh" content="0; url=preview/index.html">
-<style>
-body { font-family: -apple-system, sans-serif; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; background: #0F172A; color: white; }
-a { color: #4CAF50; }
-</style>
 </head>
 <body>
-<p>Redirecting to <a href="preview/index.html">site preview</a>...</p>
+<script>
+  // Redirect to admin after identity confirmation
+  if (window.netlifyIdentity) {
+    window.netlifyIdentity.on("init", function(user) {
+      if (!user) {
+        window.netlifyIdentity.on("login", function() {
+          document.location.href = "/admin/";
+        });
+      }
+    });
+  }
+</script>
+<p>Redirecting...</p>
 </body>
 </html>

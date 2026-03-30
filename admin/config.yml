@@ -1,0 +1,87 @@
+backend:
+  name: git-gateway
+  branch: main
+
+# Editorial workflow: creates a PR for review before publishing
+publish_mode: editorial_workflow
+
+# Where uploaded images are saved in the repo
+media_folder: "assets/uploads"
+public_folder: "/assets/uploads"
+
+collections:
+  # ── SITE PAGES (fixed pages, edit content only) ──
+  - name: "pages"
+    label: "Site Pages"
+    files:
+      - name: "home"
+        label: "Home Page"
+        file: "content/home.json"
+        fields:
+          - { label: "Hero Headline Line 1", name: "hero_line1", widget: "string", default: "Precision Capital." }
+          - { label: "Hero Headline Line 2 (italic)", name: "hero_line2", widget: "string", default: "Chicago Roots." }
+          - { label: "Hero Tagline", name: "hero_tagline", widget: "text" }
+          - { label: "About Section Label", name: "about_label", widget: "string", default: "Since 2010" }
+          - { label: "About Heading", name: "about_heading", widget: "string" }
+          - { label: "About Text", name: "about_text", widget: "markdown" }
+          - label: "Stats"
+            name: "stats"
+            widget: "list"
+            max: 4
+            fields:
+              - { label: "Number", name: "number", widget: "string" }
+              - { label: "Label", name: "label", widget: "string" }
+
+      - name: "contact"
+        label: "Contact Page"
+        file: "content/contact.json"
+        fields:
+          - { label: "Phone 1", name: "phone1", widget: "string" }
+          - { label: "Phone 2", name: "phone2", widget: "string", required: false }
+          - { label: "Email", name: "email", widget: "string" }
+          - { label: "Office Address Line 1", name: "address1", widget: "string" }
+          - { label: "Office Address Line 2", name: "address2", widget: "string" }
+
+  # ── TEAM MEMBERS ──
+  - name: "team"
+    label: "Team Members"
+    folder: "content/team"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Name", name: "title", widget: "string" }
+      - { label: "Role", name: "role", widget: "string" }
+      - { label: "Photo", name: "photo", widget: "image" }
+      - { label: "Bio", name: "body", widget: "markdown" }
+      - { label: "Email", name: "email", widget: "string", required: false }
+      - { label: "Phone", name: "phone", widget: "string", required: false }
+
+  # ── FUNDED LOANS (deal cards) ──
+  - name: "funded_loans"
+    label: "Funded Loans"
+    folder: "content/funded-loans"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Property Name", name: "title", widget: "string" }
+      - { label: "Location", name: "location", widget: "string" }
+      - { label: "Deal Type", name: "deal_type", widget: "select", options: ["Bridge Loan", "Equity Investment", "Construction Loan", "Acquisition Loan", "Rehab Loan", "Land Development", "Note Purchase"] }
+      - { label: "Property Image", name: "image", widget: "image" }
+      - { label: "Description", name: "body", widget: "markdown", required: false }
+      - { label: "Featured on Homepage", name: "featured", widget: "boolean", default: false }
+
+  # ── BRIDGE LOAN PARAMETERS ──
+  - name: "settings"
+    label: "Site Settings"
+    files:
+      - name: "loan_parameters"
+        label: "Bridge Loan Parameters"
+        file: "content/loan-parameters.json"
+        fields:
+          - label: "Parameters"
+            name: "params"
+            widget: "list"
+            fields:
+              - { label: "Label", name: "label", widget: "string" }
+              - { label: "Value", name: "value", widget: "string" }
+              - { label: "Description", name: "description", widget: "string", required: false }

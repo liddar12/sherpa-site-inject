@@ -1,0 +1,10 @@
+{
+  "params": [
+    { "label": "Loan Size", "value": "$100K – $5M", "description": "" },
+    { "label": "Loan to Value", "value": "Flexible", "description": "Based on risk/reward profile" },
+    { "label": "Rates", "value": "Deal-Specific", "description": "Based on leverage, sponsorship, equity & exit strategy" },
+    { "label": "Term", "value": "6 – 24 Months", "description": "Extensions available" },
+    { "label": "Closing", "value": "2 – 3 Weeks", "description": "From completed application" },
+    { "label": "Collateral", "value": "1st Lien Position", "description": "Commercial real estate" }
+  ]
+}

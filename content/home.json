@@ -1,0 +1,14 @@
+{
+  "hero_line1": "Precision Capital.",
+  "hero_line2": "Chicago Roots.",
+  "hero_tagline": "Boutique private equity real estate. Bridge debt and equity investments secured by commercial real estate across Chicago's most dynamic neighborhoods.",
+  "about_label": "Since 2010",
+  "about_heading": "Built on Creativity, Execution & Integrity",
+  "about_text": "Sherpa Capital Group LLC is a boutique private equity real estate firm specializing in originating bridge debt and equity investments secured by commercial non-owner occupied real estate.\n\nFounded in 2010 to capitalize on the lack of credit in the real estate industry, Sherpa was built by principals with a combined 35 years of experience in real estate lending. The firm delivers innovative creative lending solutions, diverse product offerings, and exceptional service.",
+  "stats": [
+    { "number": "350+", "label": "Transactions Funded" },
+    { "number": "15+", "label": "Years Operating" },
+    { "number": "35+", "label": "Years Combined Experience" },
+    { "number": "100%", "label": "Chicago Focused" }
+  ]
+}
