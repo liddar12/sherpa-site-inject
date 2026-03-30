@@ -236,7 +236,8 @@ function renderPage(story) {
   }).join('\n');
 
   document.getElementById('app').innerHTML = renderNav(story.slug) + sections + renderFooter();
-  document.title = `${story.name} — Sherpa Capital Group`;
+  const pageMeta = PAGE_META[story.slug] || { title: `${story.name} — Sherpa Capital Group`, description: '' };
+  updateMeta({ title: pageMeta.title, description: pageMeta.description, path: `/${story.slug === 'home' ? '' : story.slug}` });
 
   // Init animations
   initScrollBehavior();
@@ -291,7 +292,7 @@ async function renderFundedLoansPage() {
     ${renderFooter()}`;
 
   document.getElementById('app').innerHTML = html;
-  document.title = 'Funded Loans — Sherpa Capital Group';
+  updateMeta(PAGE_META['funded-loans']);
   initScrollBehavior();
   initRevealAnimations();
 }
@@ -337,7 +338,12 @@ async function renderFundedLoanDetail(slug) {
       ${renderFooter()}`;
 
     document.getElementById('app').innerHTML = html;
-    document.title = `${loan.name} — Sherpa Capital Group`;
+    updateMeta({
+      title: `${loan.name} — Sherpa Capital Group`,
+      description: `${dealLabel} — ${loan.name}${c.location ? '. ' + c.location + '.' : ''} Commercial real estate financing by Sherpa Capital Group.`,
+      path: `/funded-loans/${slug}`,
+      image: img || undefined,
+    });
     initScrollBehavior();
     initRevealAnimations();
   } catch (err) {
@@ -428,9 +434,70 @@ async function renderTeamPage() {
   const beforeCta = allSections.join('</section>') + '</section>';
 
   document.getElementById('app').innerHTML = renderNav('the-team') + beforeCta + memberSection + ctaSection + renderFooter();
-  document.title = 'The Team — Sherpa Capital Group';
+  updateMeta(PAGE_META['the-team']);
   initScrollBehavior();
   initRevealAnimations();
+}
+
+// ── SEO: dynamic meta tags ──
+const DOMAIN = 'https://www.sherpacapitalgroup.com';
+const PAGE_META = {
+  home: {
+    title: 'Sherpa Capital Group — Boutique Private Equity Real Estate',
+    description: 'Boutique private equity real estate. Bridge debt and equity investments secured by commercial real estate across Chicago\'s most dynamic neighborhoods. Since 2010.',
+  },
+  'the-team': {
+    title: 'The Team — Sherpa Capital Group',
+    description: 'Meet Ashish Parikh and Rahul Shah, Managing Principals of Sherpa Capital Group with over 35 years of combined real estate lending experience.',
+  },
+  'loan-parameters': {
+    title: 'Bridge Loans — Sherpa Capital Group',
+    description: 'Bridge loan parameters: $1M–$20M, 12–24 month terms, up to 75% LTV. Fast closings for acquisition, construction, rehab, and refinance across all commercial property types.',
+  },
+  'funded-loans': {
+    title: 'Funded Loans — Sherpa Capital Group',
+    description: 'Browse 37+ funded commercial real estate transactions including bridge loans, acquisition financing, construction loans, and equity investments across the US.',
+  },
+  equity: {
+    title: 'Equity Investments — Sherpa Capital Group',
+    description: 'Sherpa Capital Group provides equity co-investments alongside experienced sponsors for value-add and opportunistic commercial real estate projects.',
+  },
+  contact: {
+    title: 'Contact — Sherpa Capital Group',
+    description: 'Contact Sherpa Capital Group for bridge loans, equity investments, and commercial real estate financing. 1720 W. Division Street, Chicago, IL 60622.',
+  },
+};
+
+function updateMeta(opts) {
+  const title = opts.title || 'Sherpa Capital Group';
+  const desc = opts.description || PAGE_META.home.description;
+  const path = opts.path || window.location.pathname;
+  const image = opts.image || 'https://a.storyblok.com/f/291512806597839/719069/0f966975e7/hero-home.jpg';
+  const url = DOMAIN + path;
+
+  document.title = title;
+
+  // Meta description
+  let metaDesc = document.querySelector('meta[name="description"]');
+  if (metaDesc) metaDesc.setAttribute('content', desc);
+
+  // Canonical
+  let canonical = document.querySelector('link[rel="canonical"]');
+  if (canonical) canonical.setAttribute('href', url);
+
+  // Open Graph
+  const ogMap = { 'og:title': title, 'og:description': desc, 'og:url': url, 'og:image': image };
+  Object.entries(ogMap).forEach(([prop, val]) => {
+    let el = document.querySelector(`meta[property="${prop}"]`);
+    if (el) el.setAttribute('content', val);
+  });
+
+  // Twitter
+  const twMap = { 'twitter:title': title, 'twitter:description': desc, 'twitter:image': image };
+  Object.entries(twMap).forEach(([name, val]) => {
+    let el = document.querySelector(`meta[name="${name}"]`);
+    if (el) el.setAttribute('content', val);
+  });
 }
 
 // ── Router ──

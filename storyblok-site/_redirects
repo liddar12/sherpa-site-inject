@@ -1,4 +1,74 @@
-# SPA routing — all paths serve index.html (except static assets and admin)
+# Weebly legacy URL redirects (301 permanent)
+# These preserve SEO equity from the old Weebly site
+/bridge-land-loan---buffalo-new-york.html  /funded-loans/bridge-land-loan-buffalo-new-york  301
+/bridge-land-loan---buffalo-new-york  /funded-loans/bridge-land-loan-buffalo-new-york  301
+/chicago---acquisition-and-rehab-loan-of-2-apartment-buildings.html  /funded-loans/chicago-acquisition-and-rehab-loan-of-2-apartment-buildings-  301
+/chicago---acquisition-and-rehab-loan-of-2-apartment-buildings  /funded-loans/chicago-acquisition-and-rehab-loan-of-2-apartment-buildings-  301
+/chicago-bridgeport--construction-financing-for-single-family-home-development.html  /funded-loans/chicago-bridgeport-construction-financing-for-single-family-  301
+/chicago-bridgeport--construction-financing-for-single-family-home-development  /funded-loans/chicago-bridgeport-construction-financing-for-single-family-  301
+/chicago-bucktown---condo-building-construction-financing.html  /funded-loans/chicago-bucktown-condo-building-ground-up-construction-finan  301
+/chicago-bucktown---condo-building-construction-financing  /funded-loans/chicago-bucktown-condo-building-ground-up-construction-finan  301
+/chicago-kinzie-corridorwest-loop-ndash-loft-office-building.html  /funded-loans/chicago-kinzie-corridor-west-loop-loft-office-building  301
+/chicago-kinzie-corridorwest-loop-ndash-loft-office-building  /funded-loans/chicago-kinzie-corridor-west-loop-loft-office-building  301
+/chicago-lincoln-park---elston-corridor-ndash-office-building-developmen-loan.html  /funded-loans/chicago-lincoln-park-elston-corridor-office-building-develop  301
+/chicago-lincoln-park---elston-corridor-ndash-office-building-developmen-loan  /funded-loans/chicago-lincoln-park-elston-corridor-office-building-develop  301
+/chicago-north-side---acquisition-and-rehab-financing---5-single-family-homes.html  /funded-loans/chicago-north-side-acquisition-and-rehab-financing-5-single-  301
+/chicago-north-side---acquisition-and-rehab-financing---5-single-family-homes  /funded-loans/chicago-north-side-acquisition-and-rehab-financing-5-single-  301
+/chicago-north-side---broken-condo-bulk-acquisition-and-rehab-loan.html  /funded-loans/north-side-chicago-broken-condo-bulk-acquisition-and-rehab-l  301
+/chicago-north-side---broken-condo-bulk-acquisition-and-rehab-loan  /funded-loans/north-side-chicago-broken-condo-bulk-acquisition-and-rehab-l  301
+/chicago-north-side---spec-single-family-home-construction-financing.html  /funded-loans/chicago-north-side-spec-single-family-construction-financing  301
+/chicago-north-side---spec-single-family-home-construction-financing  /funded-loans/chicago-north-side-spec-single-family-construction-financing  301
+/cre-bridge-loan-atlanta-georgia---hotel-acquisition.html  /funded-loans/cre-bridge-loan-atlanta-georgia-hotel-acquisition  301
+/cre-bridge-loan-atlanta-georgia---hotel-acquisition  /funded-loans/cre-bridge-loan-atlanta-georgia-hotel-acquisition  301
+/cre-bridge-loan-buffalo-new-york---mixed-use-refinance.html  /funded-loans/cre-bridge-loan-buffalo-new-york-mixed-use-refinance  301
+/cre-bridge-loan-buffalo-new-york---mixed-use-refinance  /funded-loans/cre-bridge-loan-buffalo-new-york-mixed-use-refinance  301
+/cre-bridge-loan-cincinatti-ohio-airport---industrial-land-acquisition.html  /funded-loans/cre-bridge-loan-cincinatti-ohio-airport-industrial-land-acqu  301
+/cre-bridge-loan-cincinatti-ohio-airport---industrial-land-acquisition  /funded-loans/cre-bridge-loan-cincinatti-ohio-airport-industrial-land-acqu  301
+/cre-bridge-loan-el-paso-texas---medical-office-building.html  /funded-loans/cre-bridge-loan-el-paso-texas-medical-office-building  301
+/cre-bridge-loan-el-paso-texas---medical-office-building  /funded-loans/cre-bridge-loan-el-paso-texas-medical-office-building  301
+/cre-bridge-loan-fort-myers-florida---motel-acquisition-and-rehab-loan.html  /funded-loans/cre-bridge-loan-fort-myers-florida-motel-acquisition-and-reh  301
+/cre-bridge-loan-fort-myers-florida---motel-acquisition-and-rehab-loan  /funded-loans/cre-bridge-loan-fort-myers-florida-motel-acquisition-and-reh  301
+/flint-michigan--self-storage-facility.html  /funded-loans/flint-michigan-detroit-self-storage-facility  301
+/flint-michigan--self-storage-facility  /funded-loans/flint-michigan-detroit-self-storage-facility  301
+/glenview---acquisition-and-rehab-financing---luxury-single-family-home.html  /funded-loans/glenview-acquisition-and-rehab-financing-luxury-single-famil  301
+/glenview---acquisition-and-rehab-financing---luxury-single-family-home  /funded-loans/glenview-acquisition-and-rehab-financing-luxury-single-famil  301
+/glenview-and-wheaton---acquisition-and-rehab-financing---2-single-family-homes.html  /funded-loans/glenview-and-wheaton-acquisition-and-rehab-financing-2-singl  301
+/glenview-and-wheaton---acquisition-and-rehab-financing---2-single-family-homes  /funded-loans/glenview-and-wheaton-acquisition-and-rehab-financing-2-singl  301
+/lake-bluff---acquisition-and-rehab-financing---luxury-single-family-home.html  /funded-loans/lake-bluff-acquisition-and-rehab-financing-luxury-single-fam  301
+/lake-bluff---acquisition-and-rehab-financing---luxury-single-family-home  /funded-loans/lake-bluff-acquisition-and-rehab-financing-luxury-single-fam  301
+/lake-bluff---acquisition-and-rehab-financing---single-family-home.html  /funded-loans/lake-bluff-acquisition-and-rehab-financing-single-family-hom  301
+/lake-bluff---acquisition-and-rehab-financing---single-family-home  /funded-loans/lake-bluff-acquisition-and-rehab-financing-single-family-hom  301
+/northwest-suburbs-of-chicago--spec-single-family-construction-financing.html  /funded-loans/northwest-suburbs-of-chicago-spec-single-family-construction  301
+/northwest-suburbs-of-chicago--spec-single-family-construction-financing  /funded-loans/northwest-suburbs-of-chicago-spec-single-family-construction  301
+/norwood-park---chicago-northwest-side---acquisition-and-construction-financing.html  /funded-loans/norwood-park-chicago-northwest-side-acquisition-and-construc  301
+/norwood-park---chicago-northwest-side---acquisition-and-construction-financing  /funded-loans/norwood-park-chicago-northwest-side-acquisition-and-construc  301
+/office-bridge-acquisition-loan-ndash-oak-brook-illinois.html  /funded-loans/office-bridge-acquisition-loan-oak-brook-illinois  301
+/office-bridge-acquisition-loan-ndash-oak-brook-illinois  /funded-loans/office-bridge-acquisition-loan-oak-brook-illinois  301
+/palatine-ndash-land-development-17-improved-lots.html  /funded-loans/palatine-land-development-17-improved-lots  301
+/palatine-ndash-land-development-17-improved-lots  /funded-loans/palatine-land-development-17-improved-lots  301
+/romeoville-ndash-value-add-retail-center.html  /funded-loans/romeoville-value-add-retail-center  301
+/romeoville-ndash-value-add-retail-center  /funded-loans/romeoville-value-add-retail-center  301
+/south-suburb-of-chicago---acquisition-and-rehab-loan-of-apartment-building.html  /funded-loans/south-suburb-of-chicago-acquisition-and-rehab-loan-of-apartm  301
+/south-suburb-of-chicago---acquisition-and-rehab-loan-of-apartment-building  /funded-loans/south-suburb-of-chicago-acquisition-and-rehab-loan-of-apartm  301
+/south-suburb-of-chicago---luxury-home-acquisition-and-rehab.html  /funded-loans/south-suburb-of-chicago-luxury-home-acquisition-and-rehab  301
+/south-suburb-of-chicago---luxury-home-acquisition-and-rehab  /funded-loans/south-suburb-of-chicago-luxury-home-acquisition-and-rehab  301
+/southside---bronzeville---chicago---broken-condo-financing.html  /funded-loans/southside-bronzeville-chicago-broken-condo-financing  301
+/southside---bronzeville---chicago---broken-condo-financing  /funded-loans/southside-bronzeville-chicago-broken-condo-financing  301
+/western-suburb-of-chicago---construction-financing-new-homes.html  /funded-loans/western-suburb-of-chicago-construction-financing-new-homes  301
+/western-suburb-of-chicago---construction-financing-new-homes  /funded-loans/western-suburb-of-chicago-construction-financing-new-homes  301
+/western-suburb-of-chicago---refinance-multiple-properties.html  /funded-loans/western-suburb-of-chicago-refinance-of-multiple-properties  301
+/western-suburb-of-chicago---refinance-multiple-properties  /funded-loans/western-suburb-of-chicago-refinance-of-multiple-properties  301
+/western-suburb-of-chicago---refinance-of-spec-home.html  /funded-loans/western-suburb-of-chicago-refinance-of-spec-home  301
+/western-suburb-of-chicago---refinance-of-spec-home  /funded-loans/western-suburb-of-chicago-refinance-of-spec-home  301
+/western-suburbs-of-chicago---acquisition-and-rehab-financing---3-single-family-homes.html  /funded-loans/western-suburbs-of-chicago-acquisition-and-rehab-financing-3  301
+/western-suburbs-of-chicago---acquisition-and-rehab-financing---3-single-family-homes  /funded-loans/western-suburbs-of-chicago-acquisition-and-rehab-financing-3  301
+
+# Page aliases
+/information  /equity  301
+/information.html  /equity  301
+/funded-loans.html  /funded-loans  301
+
+# SPA routing — all paths serve index.html (except static assets)
 /admin/*    /admin/:splat    200
 /css/*      /css/:splat      200
 /js/*       /js/:splat       200
