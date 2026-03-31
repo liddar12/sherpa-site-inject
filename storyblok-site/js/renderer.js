@@ -1,19 +1,51 @@
 /**
  * Sherpa Capital Group — Storyblok Renderer
  * Fetches content from Storyblok CDN API and renders using the Sherpa design system.
- * Supports the Storyblok Visual Editor via data-blok-c attributes.
+ * All text and style overrides are editable via Storyblok CMS.
  */
 
 const STORYBLOK_TOKEN = '0c2CL470mDGLNHiNrQzEsgtt';
 const API_BASE = 'https://api.storyblok.com/v2/cdn';
-const ASSET_BASE = 'https://a.storyblok.com/f/291512806597839';
 
-// ── Storyblok editable attribute ──
-function sbEdit(blok) {
-  if (!blok._editable) return '';
-  return ' ' + blok._editable.replace('<!--#storyblok#', 'data-blok-c="').replace('-->', '"');
+// ── Global site settings (loaded once, used everywhere) ──
+let SITE = {};
+
+async function loadSiteSettings() {
+  try {
+    const resp = await fetch(`${API_BASE}/stories/site-settings?token=${STORYBLOK_TOKEN}&version=draft`);
+    if (resp.ok) {
+      const data = await resp.json();
+      SITE = data.story?.content || {};
+    }
+  } catch(e) { /* use defaults */ }
 }
 
+// ── Style override helper ──
+function styleOverride(blok, prefix) {
+  const p = prefix ? `${prefix}_` : '';
+  const parts = [];
+  const ff = blok[`${p}font_family`];
+  const fs = blok[`${p}font_size`];
+  const fc = blok[`${p}font_color`];
+  if (ff) parts.push(`font-family:${ff}`);
+  if (fs) parts.push(`font-size:${fs}`);
+  if (fc) parts.push(`color:${fc}`);
+  return parts.length ? ` style="${parts.join(';')}"` : '';
+}
+
+function headingStyle(blok, extraStyle) {
+  const parts = [];
+  const ff = blok.heading_font_family;
+  const fs = blok.heading_font_size;
+  const fc = blok.heading_font_color;
+  if (ff) parts.push(`font-family:${ff}`);
+  if (fs) parts.push(`font-size:${fs}`);
+  if (fc) parts.push(`color:${fc}`);
+  if (extraStyle) parts.push(extraStyle);
+  return parts.length ? ` style="${parts.join(';')}"` : '';
+}
+
+// ── Storyblok editable attribute ──
 function sbAttr(blok) {
   if (!blok._editable) return '';
   try {
@@ -62,15 +94,20 @@ const renderers = {
     const bgImg = blok.background_image?.filename || 'https://a.storyblok.com/f/291512806597839/719069/0f966975e7/hero-home.jpg';
     const logo = blok.show_logo ? `<div class="hero-logo-mark"><img src="https://a.storyblok.com/f/291512806597839/38141/e7e79645aa/logo.png" alt="Sherpa Capital Group" style="height:200px;width:auto;filter:brightness(0) invert(1);"></div>` : '';
     const label = blok.label ? `<p class="hero-sub">${blok.label}</p>` : '';
+    const hStyle = headingStyle(blok, '');
+    const tParts = [];
+    if (blok.tagline_font_size) tParts.push(`font-size:${blok.tagline_font_size}`);
+    if (blok.tagline_font_color) tParts.push(`color:${blok.tagline_font_color}`);
+    const taglineStyle = tParts.length ? ` style="${tParts.join(';')}"` : '';
     return `
     <section class="page-hero${blok.show_logo ? ' tall' : ''}"${sbAttr(blok)}>
       <div class="page-hero-bg" style="background-image:url('${bgImg}')"></div>
       <div class="page-hero-content">
         ${logo}
         ${label}
-        <h1 class="hero-headline">${blok.headline || ''}<br><em>${blok.headline_italic || ''}</em></h1>
+        <h1 class="hero-headline"${hStyle}>${blok.headline || ''}<br><em>${blok.headline_italic || ''}</em></h1>
         ${blok.show_logo ? '<div class="hero-divider"></div>' : ''}
-        ${blok.tagline ? `<p class="hero-tagline">${blok.tagline}</p>` : ''}
+        ${blok.tagline ? `<p class="hero-tagline"${taglineStyle}>${blok.tagline}</p>` : ''}
       </div>
     </section>`;
   },
@@ -86,13 +123,14 @@ const renderers = {
         <div class="stat-number">${s.number}</div>
         <div class="stat-label">${s.label}</div>
       </div>`).join('');
+    const hStyle = headingStyle(blok, '');
     return `
     <section class="section bg-white"${sbAttr(blok)}>
       <div class="container">
         <div class="grid-2">
           <div class="reveal">
             <p class="section-label">${blok.label || ''}</p>
-            <h2 class="section-heading">${blok.heading || ''}<br><em>${blok.heading_italic || ''}</em></h2>
+            <h2 class="section-heading"${hStyle}>${blok.heading || ''}<br><em>${blok.heading_italic || ''}</em></h2>
             <div class="content-text">${renderRichtext(blok.body)}</div>
             ${stats ? `<div class="about-stats">${stats}</div>` : ''}
           </div>
@@ -115,11 +153,12 @@ const renderers = {
         ${card.button_text ? `<p style="margin-top:1.5rem"><a href="${card.button_link || '#'}" class="btn-primary" style="padding:0.7rem 2rem;font-size:0.7rem">${card.button_text}</a></p>` : ''}
       </div>`;
     }).join('');
+    const hStyle = headingStyle(blok, '');
     return `
     <section class="section bg-dark"${sbAttr(blok)}>
       <div class="container">
         <p class="section-label reveal">${blok.label || ''}</p>
-        <h2 class="section-heading reveal">${blok.heading || ''} <em>${blok.heading_italic || ''}</em></h2>
+        <h2 class="section-heading reveal"${hStyle}>${blok.heading || ''} <em>${blok.heading_italic || ''}</em></h2>
         <p class="reveal" style="color:var(--slate-400);max-width:600px;margin-bottom:3rem">${blok.description || ''}</p>
         <div class="grid-2">${cards}</div>
       </div>
@@ -142,17 +181,21 @@ const renderers = {
   },
 
   contact_block(blok) {
+    const label = blok.section_label || 'Reach Out';
+    const heading = blok.heading || "We'd Like to";
+    const headingItalic = blok.heading_italic || 'Hear From You';
+    const introText = blok.intro_text ? renderRichtext(blok.intro_text) : `
+      <p>Whether you have a bridge loan to discuss, an equity opportunity, or just want to learn more about how Sherpa Capital operates — our team is directly accessible.</p>
+      <p>We evaluate every opportunity on its own merits and can provide term sheets quickly.</p>`;
+    const hStyle = headingStyle(blok, 'font-size:2rem');
     return `
     <section class="section bg-cream"${sbAttr(blok)}>
       <div class="container" style="max-width:900px">
         <div class="grid-2 reveal" style="gap:4rem">
           <div>
-            <p class="section-label">Reach Out</p>
-            <h2 class="section-heading" style="font-size:2rem">We'd Like to<br><em>Hear From You</em></h2>
-            <div class="content-text">
-              <p>Whether you have a bridge loan to discuss, an equity opportunity, or just want to learn more about how Sherpa Capital operates — our team is directly accessible.</p>
-              <p>We evaluate every opportunity on its own merits and can provide term sheets quickly.</p>
-            </div>
+            <p class="section-label">${label}</p>
+            <h2 class="section-heading"${hStyle}>${heading}<br><em>${headingItalic}</em></h2>
+            <div class="content-text">${introText}</div>
           </div>
           <div>
             <p class="section-label">Phone</p>
@@ -169,11 +212,12 @@ const renderers = {
   },
 
   cta_section(blok) {
+    const hStyle = headingStyle(blok, 'color:var(--white)');
     return `
     <section class="section bg-dark" style="text-align:center"${sbAttr(blok)}>
       <div class="container" style="max-width:700px">
         <p class="section-label reveal">${blok.label || ''}</p>
-        <h2 class="section-heading reveal" style="color:var(--white)">${blok.heading || ''}<br><em>${blok.heading_italic || ''}</em></h2>
+        <h2 class="section-heading reveal"${hStyle}>${blok.heading || ''}<br><em>${blok.heading_italic || ''}</em></h2>
         ${blok.description ? `<p class="reveal" style="color:var(--slate-400);max-width:500px;margin:0 auto 2rem">${blok.description}</p>` : ''}
         ${blok.button_text ? `<p class="reveal"><a href="${blok.button_link || '#'}" class="btn-primary">${blok.button_text}</a></p>` : ''}
       </div>
@@ -183,10 +227,14 @@ const renderers = {
   text_section(blok) {
     const bg = blok.background === 'dark' ? 'bg-dark' : blok.background === 'cream' ? 'bg-cream' : 'bg-white';
     const width = blok.max_width === 'narrow' ? '800px' : '1200px';
+    const parts = ['text-align:center'];
+    if (blok.font_family) parts.push(`font-family:${blok.font_family}`);
+    parts.push(`font-size:${blok.font_size || '1.1rem'}`);
+    if (blok.font_color) parts.push(`color:${blok.font_color}`);
     return `
     <section class="section ${bg}"${sbAttr(blok)}>
       <div class="container" style="max-width:${width}">
-        <div class="content-text reveal" style="text-align:center;font-size:1.1rem">
+        <div class="content-text reveal" style="${parts.join(';')}">
           ${renderRichtext(blok.body)}
         </div>
       </div>
@@ -194,15 +242,15 @@ const renderers = {
   },
 };
 
-// ── Page renderer ──
+// ── Nav (reads from SITE settings) ──
 function renderNav(currentSlug) {
   const links = [
-    ['/', 'Home'],
-    ['/the-team', 'The Team'],
-    ['/loan-parameters', 'Bridge Loans'],
-    ['/funded-loans', 'Funded Loans'],
-    ['/equity', 'Equity'],
-    ['/contact', 'Contact'],
+    ['/', SITE.nav_label_home || 'Home'],
+    ['/the-team', SITE.nav_label_team || 'The Team'],
+    ['/loan-parameters', SITE.nav_label_bridge || 'Bridge Loans'],
+    ['/funded-loans', SITE.nav_label_funded || 'Funded Loans'],
+    ['/equity', SITE.nav_label_equity || 'Equity'],
+    ['/contact', SITE.nav_label_contact || 'Contact'],
   ];
   const navLinks = links.map(([href, label]) => {
     const active = currentSlug === href.replace('/', '') || (currentSlug === 'home' && href === '/') ? ' class="active"' : '';
@@ -210,24 +258,33 @@ function renderNav(currentSlug) {
   }).join('\n');
 
   return `<nav class="nav scrolled" id="nav">
-    <a href="/" class="nav-logo"><img src="https://a.storyblok.com/f/291512806597839/38141/e7e79645aa/logo.png" alt="Sherpa Capital Group" style="height:70px;width:auto;filter:brightness(0) invert(1);"></a>
+    <a href="/" class="nav-logo"><img src="https://a.storyblok.com/f/291512806597839/38141/e7e79645aa/logo.png" alt="${SITE.site_name || 'Sherpa Capital Group'}" style="height:70px;width:auto;filter:brightness(0) invert(1);"></a>
     <ul class="nav-links" id="navLinks">${navLinks}</ul>
-    <button class="nav-toggle" onclick="toggleNav()"><span></span><span></span><span></span></button>
+    <button class="nav-toggle" aria-label="Toggle navigation" onclick="toggleNav()"><span></span><span></span><span></span></button>
   </nav>`;
 }
 
+// ── Footer (reads from SITE settings) ──
 function renderFooter() {
+  const copy = SITE.footer_text || '2026 Sherpa Capital Group LLC. All rights reserved.';
+  const labels = {
+    home: SITE.nav_label_home || 'Home',
+    bridge: SITE.nav_label_bridge || 'Bridge Loans',
+    equity: SITE.nav_label_equity || 'Equity',
+    contact: SITE.nav_label_contact || 'Contact',
+  };
   return `<footer class="footer"><div class="footer-inner">
-    <p class="footer-copy">&copy; 2026 Sherpa Capital Group LLC. All rights reserved.</p>
+    <p class="footer-copy">&copy; ${copy}</p>
     <ul class="footer-links">
-      <li><a href="/">Home</a></li>
-      <li><a href="/loan-parameters">Bridge Loans</a></li>
-      <li><a href="/equity">Equity</a></li>
-      <li><a href="/contact">Contact</a></li>
+      <li><a href="/">${labels.home}</a></li>
+      <li><a href="/loan-parameters">${labels.bridge}</a></li>
+      <li><a href="/equity">${labels.equity}</a></li>
+      <li><a href="/contact">${labels.contact}</a></li>
     </ul>
   </div></footer>`;
 }
 
+// ── Page renderer ──
 function renderPage(story) {
   const body = story.content.body || [];
   const sections = body.map(blok => {
@@ -236,15 +293,14 @@ function renderPage(story) {
   }).join('\n');
 
   document.getElementById('app').innerHTML = renderNav(story.slug) + sections + renderFooter();
-  const pageMeta = PAGE_META[story.slug] || { title: `${story.name} — Sherpa Capital Group`, description: '' };
+  const pageMeta = PAGE_META[story.slug] || { title: `${story.name} — ${SITE.site_name || 'Sherpa Capital Group'}`, description: '' };
   updateMeta({ title: pageMeta.title, description: pageMeta.description, path: `/${story.slug === 'home' ? '' : story.slug}` });
 
-  // Init animations
   initScrollBehavior();
   initRevealAnimations();
 }
 
-// ── Funded Loans page (special: pulls from folder) ──
+// ── Funded Loans page (reads text from SITE settings) ──
 async function renderFundedLoansPage() {
   const [pageResp, loansResp] = await Promise.all([
     fetch(`${API_BASE}/stories/funded-loans?token=${STORYBLOK_TOKEN}&version=draft`).then(r => r.json()).catch(() => null),
@@ -266,27 +322,28 @@ async function renderFundedLoansPage() {
     </a>`;
   }).join('');
 
+  const S = SITE;
   const html = `
     ${renderNav('funded-loans')}
     <section class="page-hero">
       <div class="page-hero-bg" style="background-image:url('https://a.storyblok.com/f/291512806597839/482907/8ff4682c73/hero-funded.jpg')"></div>
       <div class="page-hero-content">
-        <p class="hero-sub">Our Portfolio</p>
-        <h1 class="hero-headline">Funded <em>Loans</em></h1>
+        <p class="hero-sub">${S.funded_hero_label || 'Our Portfolio'}</p>
+        <h1 class="hero-headline">${S.funded_hero_heading || 'Funded'} <em>${S.funded_hero_heading_italic || 'Loans'}</em></h1>
       </div>
     </section>
     <section class="section bg-cream">
       <div class="container">
-        <p class="section-label reveal">Recently Funded</p>
-        <h2 class="section-heading reveal">Selected <em>Transactions</em></h2>
+        <p class="section-label reveal">${S.funded_section_label || 'Recently Funded'}</p>
+        <h2 class="section-heading reveal">${S.funded_section_heading || 'Selected'} <em>${S.funded_section_heading_italic || 'Transactions'}</em></h2>
         <div class="funded-grid reveal">${cards}</div>
       </div>
     </section>
     <section class="section bg-dark" style="text-align:center">
       <div class="container" style="max-width:700px">
-        <p class="section-label reveal">Have a Deal?</p>
-        <h2 class="section-heading reveal" style="color:var(--white)">Ready to Discuss<br><em>Your Next Deal?</em></h2>
-        <p class="reveal"><a href="/contact" class="btn-primary">Contact Us</a></p>
+        <p class="section-label reveal">${S.funded_cta_label || 'Have a Deal?'}</p>
+        <h2 class="section-heading reveal" style="color:var(--white)">${S.funded_cta_heading || 'Ready to Discuss'}<br><em>${S.funded_cta_heading_italic || 'Your Next Deal?'}</em></h2>
+        <p class="reveal"><a href="/contact" class="btn-primary">${S.funded_cta_button || 'Contact Us'}</a></p>
       </div>
     </section>
     ${renderFooter()}`;
@@ -330,8 +387,8 @@ async function renderFundedLoanDetail(slug) {
             </div>
           </div>
           <div class="reveal" style="margin-top:3rem;text-align:center">
-            <a href="/funded-loans" class="btn-primary" style="margin-right:1rem">&larr; All Funded Loans</a>
-            <a href="/contact" class="btn-primary" style="background:transparent;border:1px solid var(--forest);color:var(--forest)">Discuss a Deal</a>
+            <a href="/funded-loans" class="btn-primary" style="margin-right:1rem">&larr; ${SITE.nav_label_funded || 'All Funded Loans'}</a>
+            <a href="/contact" class="btn-primary" style="background:transparent;border:1px solid var(--forest);color:var(--forest)">${SITE.funded_cta_button || 'Discuss a Deal'}</a>
           </div>
         </div>
       </section>
@@ -339,15 +396,14 @@ async function renderFundedLoanDetail(slug) {
 
     document.getElementById('app').innerHTML = html;
     updateMeta({
-      title: `${loan.name} — Sherpa Capital Group`,
-      description: `${dealLabel} — ${loan.name}${c.location ? '. ' + c.location + '.' : ''} Commercial real estate financing by Sherpa Capital Group.`,
+      title: `${loan.name} — ${SITE.site_name || 'Sherpa Capital Group'}`,
+      description: `${dealLabel} — ${loan.name}${c.location ? '. ' + c.location + '.' : ''} Commercial real estate financing by ${SITE.site_name || 'Sherpa Capital Group'}.`,
       path: `/funded-loans/${slug}`,
       image: img || undefined,
     });
     initScrollBehavior();
     initRevealAnimations();
   } catch (err) {
-    // If story not found, redirect to funded loans grid
     window.history.replaceState({}, '', '/funded-loans');
     renderFundedLoansPage();
   }
@@ -389,7 +445,7 @@ const WEEBLY_REDIRECTS = {
   'chicago-bucktown---wicker-park---luxury-home-construction-financing': 'funded-loans/chicago-lakeview-wrigleyville-acquisition-loan-for-mixed-use',
 };
 
-// ── Team page (special: pulls team members) ──
+// ── Team page ──
 async function renderTeamPage() {
   const [pageResp, membersResp] = await Promise.all([
     fetch(`${API_BASE}/stories/the-team?token=${STORYBLOK_TOKEN}&version=draft`).then(r => r.json()),
@@ -399,17 +455,20 @@ async function renderTeamPage() {
   const story = pageResp.story;
   const members = membersResp.stories || [];
 
-  // Render page sections (hero, intro text)
   const body = story.content.body || [];
   let sections = body.map(blok => {
     const renderer = renderers[blok.component];
     return renderer ? renderer(blok) : '';
   }).join('\n');
 
-  // Insert team members before the last section (CTA)
   const memberCards = members.map(m => {
     const c = m.content;
     const photo = c.photo?.filename || '';
+    const nameParts = [];
+    if (c.font_family) nameParts.push(`font-family:${c.font_family}`);
+    nameParts.push('font-size:' + (c.font_size || '2.2rem'));
+    if (c.font_color) nameParts.push(`color:${c.font_color}`);
+    const nameStyle = ` style="${nameParts.join(';')}"`;
     return `
     <div class="grid-2 reveal" style="gap:4rem;margin-bottom:4rem"${sbAttr(c)}>
       <div class="img-frame" style="aspect-ratio:3/4">
@@ -417,19 +476,17 @@ async function renderTeamPage() {
       </div>
       <div>
         <p class="section-label">${c.role || ''}</p>
-        <h2 class="section-heading" style="font-size:2.2rem">${m.name.split(' ')[0]} <em>${m.name.split(' ').slice(1).join(' ')}</em></h2>
+        <h2 class="section-heading"${nameStyle}>${m.name.split(' ')[0]} <em>${m.name.split(' ').slice(1).join(' ')}</em></h2>
         <div class="content-text">${renderRichtext(c.bio)}</div>
         ${c.email ? `<p style="font-size:0.85rem;color:var(--slate-400)"><a href="mailto:${c.email}" style="color:var(--forest);text-decoration:none">${c.email}</a> &nbsp;|&nbsp; P ${c.phone || ''}</p>` : ''}
       </div>
     </div>`;
   }).join('');
 
-  // Insert members section
   const memberSection = `<section class="section bg-white"><div class="container">${memberCards}</div></section>`;
 
-  // Split sections: everything before CTA + members + CTA
   const allSections = sections.split('</section>');
-  const lastSection = allSections.pop(); // empty string after last </section>
+  const lastSection = allSections.pop();
   const ctaSection = allSections.pop() + '</section>';
   const beforeCta = allSections.join('</section>') + '</section>';
 
@@ -469,30 +526,23 @@ const PAGE_META = {
 };
 
 function updateMeta(opts) {
-  const title = opts.title || 'Sherpa Capital Group';
+  const title = opts.title || SITE.site_name || 'Sherpa Capital Group';
   const desc = opts.description || PAGE_META.home.description;
   const path = opts.path || window.location.pathname;
   const image = opts.image || 'https://a.storyblok.com/f/291512806597839/719069/0f966975e7/hero-home.jpg';
   const url = DOMAIN + path;
 
   document.title = title;
-
-  // Meta description
   let metaDesc = document.querySelector('meta[name="description"]');
   if (metaDesc) metaDesc.setAttribute('content', desc);
-
-  // Canonical
   let canonical = document.querySelector('link[rel="canonical"]');
   if (canonical) canonical.setAttribute('href', url);
 
-  // Open Graph
   const ogMap = { 'og:title': title, 'og:description': desc, 'og:url': url, 'og:image': image };
   Object.entries(ogMap).forEach(([prop, val]) => {
     let el = document.querySelector(`meta[property="${prop}"]`);
     if (el) el.setAttribute('content', val);
   });
-
-  // Twitter
   const twMap = { 'twitter:title': title, 'twitter:description': desc, 'twitter:image': image };
   Object.entries(twMap).forEach(([name, val]) => {
     let el = document.querySelector(`meta[name="${name}"]`);
@@ -502,26 +552,25 @@ function updateMeta(opts) {
 
 // ── Router ──
 async function loadPage() {
+  // Load site settings on first call
+  if (!SITE.site_name) await loadSiteSettings();
+
   let path = window.location.pathname.replace(/\.html$/, '').replace(/^\//, '').replace(/\/$/, '');
   if (!path || path === 'index') path = 'home';
 
-  // Weebly URL redirects (old deal page URLs)
   if (WEEBLY_REDIRECTS[path]) {
     path = WEEBLY_REDIRECTS[path];
     window.history.replaceState({}, '', '/' + path);
   }
 
-  // Special pages with folder content
   if (path === 'funded-loans') return renderFundedLoansPage();
   if (path === 'the-team') return renderTeamPage();
 
-  // Funded loan detail pages
   if (path.startsWith('funded-loans/')) {
     const slug = path.replace('funded-loans/', '');
     return renderFundedLoanDetail(slug);
   }
 
-  // Alias
   if (path === 'information') path = 'equity';
 
   try {
