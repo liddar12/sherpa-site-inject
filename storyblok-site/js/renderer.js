@@ -92,17 +92,41 @@ function renderRichtext(doc) {
 const renderers = {
   hero(blok) {
     const bgImg = blok.background_image?.filename || 'https://a.storyblok.com/f/291512806597839/719069/0f966975e7/hero-home.jpg';
-    const logo = blok.show_logo ? `<div class="hero-logo-mark"><img src="https://a.storyblok.com/f/291512806597839/38141/e7e79645aa/logo.png" alt="Sherpa Capital Group" style="height:200px;width:auto;filter:brightness(0) invert(1);"></div>` : '';
+
+    // Logo size + offset
+    const logoH = blok.logo_size || '200px';
+    const logoOffParts = ['filter:brightness(0) invert(1)', `height:${logoH}`, 'width:auto'];
+    if (blok.logo_vertical_offset) logoOffParts.push(`transform:translateY(${blok.logo_vertical_offset})`);
+    const logo = blok.show_logo ? `<div class="hero-logo-mark"><img src="https://a.storyblok.com/f/291512806597839/38141/e7e79645aa/logo.png" alt="Sherpa Capital Group" style="${logoOffParts.join(';')}"></div>` : '';
+
     const label = blok.label ? `<p class="hero-sub">${blok.label}</p>` : '';
     const hStyle = headingStyle(blok, '');
+
+    // Tagline style
     const tParts = [];
     if (blok.tagline_font_size) tParts.push(`font-size:${blok.tagline_font_size}`);
     if (blok.tagline_font_color) tParts.push(`color:${blok.tagline_font_color}`);
     const taglineStyle = tParts.length ? ` style="${tParts.join(';')}"` : '';
+
+    // Image focus point
+    const focusMap = { top: 'center top', center: 'center center', bottom: 'center bottom' };
+    const bgPos = focusMap[blok.image_focus_point] || 'center 30%';
+
+    // Text vertical position
+    const posMap = { top: 'flex-start', bottom: 'flex-end' };
+    const alignItems = posMap[blok.text_vertical_position] || 'center';
+    const sectionParts = [`align-items:${alignItems}`];
+    const contentParts = [];
+    if (blok.text_vertical_position === 'top') contentParts.push('padding-top:clamp(100px,15vh,160px)');
+    if (blok.text_vertical_position === 'bottom') contentParts.push('padding-bottom:clamp(40px,8vh,80px)');
+    if (blok.text_vertical_offset) contentParts.push(`transform:translateY(${blok.text_vertical_offset})`);
+    const sectionStyle = sectionParts.length ? sectionParts.join(';') : '';
+    const contentStyle = contentParts.length ? ` style="${contentParts.join(';')}"` : '';
+
     return `
-    <section class="page-hero${blok.show_logo ? ' tall' : ''}"${sbAttr(blok)}>
-      <div class="page-hero-bg" style="background-image:url('${bgImg}')"></div>
-      <div class="page-hero-content">
+    <section class="page-hero${blok.show_logo ? ' tall' : ''}" style="${sectionStyle}"${sbAttr(blok)}>
+      <div class="page-hero-bg" style="background-image:url('${bgImg}');background-position:${bgPos}"></div>
+      <div class="page-hero-content"${contentStyle}>
         ${logo}
         ${label}
         <h1 class="hero-headline"${hStyle}>${blok.headline || ''}<br><em>${blok.headline_italic || ''}</em></h1>
@@ -257,8 +281,9 @@ function renderNav(currentSlug) {
     return `<li><a href="${href}"${active}>${label}</a></li>`;
   }).join('\n');
 
+  const navLogoH = SITE.nav_logo_height || '70px';
   return `<nav class="nav scrolled" id="nav">
-    <a href="/" class="nav-logo"><img src="https://a.storyblok.com/f/291512806597839/38141/e7e79645aa/logo.png" alt="${SITE.site_name || 'Sherpa Capital Group'}" style="height:70px;width:auto;filter:brightness(0) invert(1);"></a>
+    <a href="/" class="nav-logo"><img src="https://a.storyblok.com/f/291512806597839/38141/e7e79645aa/logo.png" alt="${SITE.site_name || 'Sherpa Capital Group'}" style="height:${navLogoH};width:auto;filter:brightness(0) invert(1);"></a>
     <ul class="nav-links" id="navLinks">${navLinks}</ul>
     <button class="nav-toggle" aria-label="Toggle navigation" onclick="toggleNav()"><span></span><span></span><span></span></button>
   </nav>`;
