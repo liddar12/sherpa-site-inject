@@ -141,7 +141,7 @@ const renderers = {
       <div class="page-hero-content"${contentStyle}>
         ${logo}
         ${label}
-        <h1 class="hero-headline"${hStyle}>${blok.headline || ''}<br><em>${blok.headline_italic || ''}</em></h1>
+        <h1 class="hero-headline"${hStyle}>${blok.headline || ''}${blok.headline_italic ? '<br><em>' + blok.headline_italic + '</em>' : ''}</h1>
         ${divider}
         ${blok.tagline ? `<p class="hero-tagline"${taglineStyle}>${blok.tagline}</p>` : ''}
       </div>
@@ -166,7 +166,7 @@ const renderers = {
         <div class="grid-2">
           <div class="reveal">
             <p class="section-label">${blok.label || ''}</p>
-            <h2 class="section-heading"${hStyle}>${blok.heading || ''}<br><em>${blok.heading_italic || ''}</em></h2>
+            <h2 class="section-heading"${hStyle}>${blok.heading || ''}${blok.heading_italic ? '<br><em>' + blok.heading_italic + '</em>' : ''}</h2>
             <div class="content-text">${renderRichtext(blok.body)}</div>
             ${stats ? `<div class="about-stats">${stats}</div>` : ''}
           </div>
@@ -194,7 +194,7 @@ const renderers = {
     <section class="section bg-dark"${sbAttr(blok)}>
       <div class="container">
         <p class="section-label reveal">${blok.label || ''}</p>
-        <h2 class="section-heading reveal"${hStyle}>${blok.heading || ''} <em>${blok.heading_italic || ''}</em></h2>
+        <h2 class="section-heading reveal"${hStyle}>${blok.heading || ''}${blok.heading_italic ? ' <em>' + blok.heading_italic + '</em>' : ''}</h2>
         <p class="reveal" style="color:var(--slate-400);max-width:600px;margin-bottom:3rem">${blok.description || ''}</p>
         <div class="grid-2">${cards}</div>
       </div>
@@ -253,7 +253,7 @@ const renderers = {
     <section class="section bg-dark" style="text-align:center"${sbAttr(blok)}>
       <div class="container" style="max-width:700px">
         <p class="section-label reveal">${blok.label || ''}</p>
-        <h2 class="section-heading reveal"${hStyle}>${blok.heading || ''}<br><em>${blok.heading_italic || ''}</em></h2>
+        <h2 class="section-heading reveal"${hStyle}>${blok.heading || ''}${blok.heading_italic ? '<br><em>' + blok.heading_italic + '</em>' : ''}</h2>
         ${blok.description ? `<p class="reveal" style="color:var(--slate-400);max-width:500px;margin:0 auto 2rem">${blok.description}</p>` : ''}
         ${blok.button_text ? `<p class="reveal"><a href="${blok.button_link || '#'}" class="btn-primary">${blok.button_text}</a></p>` : ''}
       </div>
@@ -382,20 +382,20 @@ async function renderFundedLoansPage() {
       <div class="page-hero-bg" style="background-image:url('${heroImg}');background-position:${bgPos}"></div>
       <div class="page-hero-content"${contentStyle}>
         <p class="hero-sub">${S.funded_hero_label || 'Our Portfolio'}</p>
-        <h1 class="hero-headline"${hStyle}>${S.funded_hero_heading || 'Funded'} <em>${S.funded_hero_heading_italic || 'Loans'}</em></h1>
+        <h1 class="hero-headline"${hStyle}>${S.funded_hero_heading || 'Funded Loans'}${S.funded_hero_heading_italic ? ' <em>' + S.funded_hero_heading_italic + '</em>' : ''}</h1>
       </div>
     </section>
     <section class="section bg-cream">
       <div class="container">
         <p class="section-label reveal">${S.funded_section_label || 'Recently Funded'}</p>
-        <h2 class="section-heading reveal">${S.funded_section_heading || 'Selected'} <em>${S.funded_section_heading_italic || 'Transactions'}</em></h2>
+        <h2 class="section-heading reveal">${S.funded_section_heading || 'Selected Transactions'}${S.funded_section_heading_italic ? ' <em>' + S.funded_section_heading_italic + '</em>' : ''}</h2>
         <div class="funded-grid reveal">${cards}</div>
       </div>
     </section>
     <section class="section bg-dark" style="text-align:center">
       <div class="container" style="max-width:700px">
         <p class="section-label reveal">${S.funded_cta_label || 'Have a Deal?'}</p>
-        <h2 class="section-heading reveal" style="color:var(--white)">${S.funded_cta_heading || 'Ready to Discuss'}<br><em>${S.funded_cta_heading_italic || 'Your Next Deal?'}</em></h2>
+        <h2 class="section-heading reveal" style="color:var(--white)">${S.funded_cta_heading || 'Ready to Discuss Your Next Deal?'}${S.funded_cta_heading_italic ? '<br><em>' + S.funded_cta_heading_italic + '</em>' : ''}</h2>
         <p class="reveal"><a href="/contact" class="btn-primary">${S.funded_cta_button || 'Contact Us'}</a></p>
       </div>
     </section>
