@@ -344,7 +344,7 @@ async function renderFundedLoansPage() {
     fetch(`${API_BASE}/stories?token=${STORYBLOK_TOKEN}&version=draft&starts_with=funded-loans/&per_page=50`).then(r => r.json()),
   ]);
 
-  const loans = loansResp.stories || [];
+  const loans = (loansResp.stories || []).sort((a, b) => (a.content.position || 999) - (b.content.position || 999));
   const cards = loans.map(loan => {
     const c = loan.content;
     const img = c.image?.filename || '';
