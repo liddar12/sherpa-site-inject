@@ -24,11 +24,11 @@ body{font-family:var(--font-body);color:var(--slate-800);background:var(--cream)
 .page-hero{position:relative;height:45vh;min-height:340px;display:flex;align-items:center;justify-content:center;overflow:hidden}
 .page-hero.tall{height:65vh;min-height:500px}
 .page-hero-bg{position:absolute;inset:0;background-size:cover;background-position:center 30%}
-.page-hero-bg::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(15,23,42,0.7) 0%,rgba(15,23,42,0.5) 50%,rgba(15,23,42,0.85) 100%)}
+.page-hero-bg::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(15,23,42,0.75) 0%,rgba(15,23,42,0.65) 50%,rgba(15,23,42,0.9) 100%)}
 .page-hero-content{position:relative;z-index:2;text-align:center;padding:0 2rem;max-width:800px;animation:fadeUp 1.2s var(--ease) both}
 @keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
 .hero-logo-mark{margin-bottom:1.5rem}
-.hero-headline{font-family:var(--font-display);font-size:clamp(2.2rem,5vw,3.8rem);font-weight:400;color:var(--white);line-height:1.15;margin-bottom:0.5rem;letter-spacing:-0.01em}
+.hero-headline{font-family:var(--font-display);font-size:clamp(2.2rem,5vw,3.8rem);font-weight:400;color:var(--white);line-height:1.15;margin-bottom:0.5rem;letter-spacing:-0.01em;text-shadow:0 2px 8px rgba(0,0,0,0.4)}
 .hero-headline em{font-style:italic;color:var(--forest-light)}
 .hero-sub{font-family:var(--font-body);font-size:1.6rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--forest-light);font-weight:600;margin-bottom:1.5rem}
 .hero-divider{width:60px;height:1px;background:var(--forest-light);margin:0 auto 1.5rem;animation:divGrow 1.5s var(--ease) 0.5s both}

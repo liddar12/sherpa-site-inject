@@ -7,12 +7,25 @@
 const STORYBLOK_TOKEN = '0c2CL470mDGLNHiNrQzEsgtt';
 const API_BASE = 'https://api.storyblok.com/v2/cdn';
 
+// Use published content by default; fall back to draft inside the Storyblok Visual Editor
+const isStoryblokEditor = (window.location !== window.parent.location) ||
+  new URLSearchParams(window.location.search).has('_storyblok');
+const SB_VERSION = isStoryblokEditor ? 'draft' : 'published';
+
+// ── WebP image optimization via Storyblok Image Service ──
+function sbWebP(url) {
+  if (!url || !url.includes('a.storyblok.com')) return url;
+  // Already has filters — append format(webp)
+  if (url.includes('/m/')) return url.replace(/\/?$/, '') + '/filters:format(webp)';
+  return url + '/m/filters:format(webp)';
+}
+
 // ── Global site settings (loaded once, used everywhere) ──
 let SITE = {};
 
 async function loadSiteSettings() {
   try {
-    const resp = await fetch(`${API_BASE}/stories/site-settings?token=${STORYBLOK_TOKEN}&version=draft`);
+    const resp = await fetch(`${API_BASE}/stories/site-settings?token=${STORYBLOK_TOKEN}&version=${SB_VERSION}`);
     if (resp.ok) {
       const data = await resp.json();
       SITE = data.story?.content || {};
@@ -94,7 +107,7 @@ const linkedinIcon = (size = 16) => `<svg xmlns="http://www.w3.org/2000/svg" wid
 // ── Component renderers ──
 const renderers = {
   hero(blok) {
-    const bgImg = blok.background_image?.filename || 'https://a.storyblok.com/f/291512806597839/719069/0f966975e7/hero-home.jpg';
+    const bgImg = sbWebP(blok.background_image?.filename || 'https://a.storyblok.com/f/291512806597839/719069/0f966975e7/hero-home.jpg');
 
     // Logo size + offset
     const logoH = blok.logo_size || '200px';
@@ -155,7 +168,7 @@ const renderers = {
     const img = blok.image?.filename ? `
       <div class="img-frame reveal" style="aspect-ratio:4/5">
         <div class="img-accent"></div>
-        <img src="${blok.image.filename}" alt="" loading="lazy">
+        <img src="${sbWebP(blok.image.filename)}" alt="" loading="lazy">
       </div>` : '';
     const stats = (blok.stats || []).map(s => `
       <div${sbAttr(s)}>
@@ -338,6 +351,11 @@ function renderPage(story) {
   const pageMeta = PAGE_META[story.slug] || { title: `${story.name} — ${SITE.site_name || 'Sherpa Capital Group'}`, description: '' };
   updateMeta({ title: pageMeta.title, description: pageMeta.description, path: `/${story.slug === 'home' ? '' : story.slug}` });
 
+  // Breadcrumbs for standard pages
+  const crumbs = [{ name: 'Home', url: DOMAIN + '/' }];
+  if (story.slug !== 'home') crumbs.push({ name: story.name, url: DOMAIN + '/' + story.slug });
+  injectBreadcrumbs(crumbs);
+
   initScrollBehavior();
   initRevealAnimations();
 }
@@ -345,8 +363,8 @@ function renderPage(story) {
 // ── Funded Loans page (reads text from SITE settings) ──
 async function renderFundedLoansPage() {
   const [pageResp, loansResp] = await Promise.all([
-    fetch(`${API_BASE}/stories/funded-loans?token=${STORYBLOK_TOKEN}&version=draft`).then(r => r.json()).catch(() => null),
-    fetch(`${API_BASE}/stories?token=${STORYBLOK_TOKEN}&version=draft&starts_with=funded-loans/&per_page=50`).then(r => r.json()),
+    fetch(`${API_BASE}/stories/funded-loans?token=${STORYBLOK_TOKEN}&version=${SB_VERSION}`).then(r => r.json()).catch(() => null),
+    fetch(`${API_BASE}/stories?token=${STORYBLOK_TOKEN}&version=${SB_VERSION}&starts_with=funded-loans/&per_page=50`).then(r => r.json()),
   ]);
 
   const loans = (loansResp.stories || []).sort((a, b) => (a.content.position || 999) - (b.content.position || 999));
@@ -355,7 +373,7 @@ async function renderFundedLoansPage() {
     const img = c.image?.filename || '';
     return `
     <a href="/${loan.full_slug}" class="funded-card"${sbAttr(c)}>
-      ${img ? `<img src="${img}" alt="${loan.name}" loading="lazy" onerror="this.style.display='none'">` : ''}
+      ${img ? `<img src="${sbWebP(img)}" alt="${loan.name}" loading="lazy" onerror="this.style.display='none'">` : ''}
       <div class="funded-overlay">
         <div class="funded-label">${c.deal_type ? c.deal_type.replace('_',' ').toUpperCase() : 'BRIDGE LOAN'}</div>
         <div class="funded-title">${loan.name}</div>
@@ -366,7 +384,7 @@ async function renderFundedLoansPage() {
 
   const S = SITE;
   // Hero image and positioning from site_settings
-  const heroImg = S.funded_hero_image?.filename || 'https://a.storyblok.com/f/291512806597839/482907/8ff4682c73/hero-funded.jpg';
+  const heroImg = sbWebP(S.funded_hero_image?.filename || 'https://a.storyblok.com/f/291512806597839/482907/8ff4682c73/hero-funded.jpg');
   const focusMap = { top: 'center top', center: 'center center', bottom: 'center bottom' };
   const bgPos = focusMap[S.funded_hero_image_focus] || 'center 30%';
   const posMap = { top: 'flex-start', bottom: 'flex-end' };
@@ -408,6 +426,10 @@ async function renderFundedLoansPage() {
 
   document.getElementById('app').innerHTML = html;
   updateMeta(PAGE_META['funded-loans']);
+  injectBreadcrumbs([
+    { name: 'Home', url: DOMAIN + '/' },
+    { name: 'Funded Loans', url: DOMAIN + '/funded-loans' }
+  ]);
   initScrollBehavior();
   initRevealAnimations();
 }
@@ -415,18 +437,19 @@ async function renderFundedLoansPage() {
 // ── Funded Loan detail page ──
 async function renderFundedLoanDetail(slug) {
   try {
-    const resp = await fetch(`${API_BASE}/stories/funded-loans/${slug}?token=${STORYBLOK_TOKEN}&version=draft`);
+    const resp = await fetch(`${API_BASE}/stories/funded-loans/${slug}?token=${STORYBLOK_TOKEN}&version=${SB_VERSION}`);
     if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
     const data = await resp.json();
     const loan = data.story;
     const c = loan.content;
-    const img = c.image?.filename || '';
+    const imgRaw = c.image?.filename || '';
+    const img = sbWebP(imgRaw);
     const dealLabel = c.deal_type ? c.deal_type.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()) : 'Bridge Loan';
 
     const html = `
       ${renderNav('funded-loans')}
       <section class="page-hero" style="min-height:50vh">
-        <div class="page-hero-bg" style="background-image:url('${img || 'https://a.storyblok.com/f/291512806597839/482907/8ff4682c73/hero-funded.jpg'}')"></div>
+        <div class="page-hero-bg" style="background-image:url('${img || sbWebP('https://a.storyblok.com/f/291512806597839/482907/8ff4682c73/hero-funded.jpg')}')"></div>
         <div class="page-hero-content">
           <p class="hero-sub">${dealLabel}</p>
           <h1 class="hero-headline" style="font-size:clamp(1.6rem,3.5vw,2.8rem)">${loan.name}</h1>
@@ -457,8 +480,13 @@ async function renderFundedLoanDetail(slug) {
       title: `${loan.name} — ${SITE.site_name || 'Sherpa Capital Group'}`,
       description: `${dealLabel} — ${loan.name}${c.location ? '. ' + c.location + '.' : ''} Commercial real estate financing by ${SITE.site_name || 'Sherpa Capital Group'}.`,
       path: `/funded-loans/${slug}`,
-      image: img || undefined,
+      image: imgRaw || undefined,
     });
+    injectBreadcrumbs([
+      { name: 'Home', url: DOMAIN + '/' },
+      { name: 'Funded Loans', url: DOMAIN + '/funded-loans' },
+      { name: loan.name, url: DOMAIN + '/funded-loans/' + slug }
+    ]);
     initScrollBehavior();
     initRevealAnimations();
   } catch (err) {
@@ -506,8 +534,8 @@ const WEEBLY_REDIRECTS = {
 // ── Team page ──
 async function renderTeamPage() {
   const [pageResp, membersResp] = await Promise.all([
-    fetch(`${API_BASE}/stories/the-team?token=${STORYBLOK_TOKEN}&version=draft`).then(r => r.json()),
-    fetch(`${API_BASE}/stories?token=${STORYBLOK_TOKEN}&version=draft&starts_with=team/&per_page=20`).then(r => r.json()),
+    fetch(`${API_BASE}/stories/the-team?token=${STORYBLOK_TOKEN}&version=${SB_VERSION}`).then(r => r.json()),
+    fetch(`${API_BASE}/stories?token=${STORYBLOK_TOKEN}&version=${SB_VERSION}&starts_with=team/&per_page=20`).then(r => r.json()),
   ]);
 
   const story = pageResp.story;
@@ -521,7 +549,7 @@ async function renderTeamPage() {
 
   const memberCards = members.map(m => {
     const c = m.content;
-    const photo = c.photo?.filename || '';
+    const photo = sbWebP(c.photo?.filename || '');
     const nameParts = [];
     if (c.font_family) nameParts.push(`font-family:${c.font_family}`);
     nameParts.push('font-size:' + (c.font_size || '2.2rem'));
@@ -550,6 +578,10 @@ async function renderTeamPage() {
 
   document.getElementById('app').innerHTML = renderNav('the-team') + beforeCta + memberSection + ctaSection + renderFooter();
   updateMeta(PAGE_META['the-team']);
+  injectBreadcrumbs([
+    { name: 'Home', url: DOMAIN + '/' },
+    { name: 'The Team', url: DOMAIN + '/the-team' }
+  ]);
   initScrollBehavior();
   initRevealAnimations();
 }
@@ -583,11 +615,33 @@ const PAGE_META = {
   },
 };
 
+// ── Structured data: BreadcrumbList JSON-LD ──
+function injectBreadcrumbs(items) {
+  // Remove any previous breadcrumb JSON-LD
+  const prev = document.getElementById('breadcrumb-jsonld');
+  if (prev) prev.remove();
+  const breadcrumb = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    'itemListElement': items.map((item, i) => ({
+      '@type': 'ListItem',
+      'position': i + 1,
+      'name': item.name,
+      'item': item.url
+    }))
+  };
+  const script = document.createElement('script');
+  script.type = 'application/ld+json';
+  script.id = 'breadcrumb-jsonld';
+  script.textContent = JSON.stringify(breadcrumb);
+  document.head.appendChild(script);
+}
+
 function updateMeta(opts) {
   const title = opts.title || SITE.site_name || 'Sherpa Capital Group';
   const desc = opts.description || PAGE_META.home.description;
   const path = opts.path || window.location.pathname;
-  const image = opts.image || 'https://a.storyblok.com/f/291512806597839/719069/0f966975e7/hero-home.jpg';
+  const image = sbWebP(opts.image || 'https://a.storyblok.com/f/291512806597839/719069/0f966975e7/hero-home.jpg');
   const url = DOMAIN + path;
 
   document.title = title;
@@ -632,7 +686,7 @@ async function loadPage() {
   if (path === 'information') path = 'equity';
 
   try {
-    const resp = await fetch(`${API_BASE}/stories/${path}?token=${STORYBLOK_TOKEN}&version=draft`);
+    const resp = await fetch(`${API_BASE}/stories/${path}?token=${STORYBLOK_TOKEN}&version=${SB_VERSION}`);
     if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
     const data = await resp.json();
     renderPage(data.story);
