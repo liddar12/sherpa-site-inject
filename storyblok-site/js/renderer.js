@@ -360,13 +360,29 @@ async function renderFundedLoansPage() {
   }).join('');
 
   const S = SITE;
+  // Hero image and positioning from site_settings
+  const heroImg = S.funded_hero_image?.filename || 'https://a.storyblok.com/f/291512806597839/482907/8ff4682c73/hero-funded.jpg';
+  const focusMap = { top: 'center top', center: 'center center', bottom: 'center bottom' };
+  const bgPos = focusMap[S.funded_hero_image_focus] || 'center 30%';
+  const posMap = { top: 'flex-start', bottom: 'flex-end' };
+  const alignItems = posMap[S.funded_hero_text_position] || 'center';
+  const contentParts = [];
+  if (S.funded_hero_text_position === 'top') contentParts.push('padding-top:clamp(100px,15vh,160px)');
+  if (S.funded_hero_text_position === 'bottom') contentParts.push('padding-bottom:clamp(40px,8vh,80px)');
+  if (S.funded_hero_text_offset) contentParts.push(`transform:translateY(${S.funded_hero_text_offset})`);
+  const contentStyle = contentParts.length ? ` style="${contentParts.join(';')}"` : '';
+  const hParts = [];
+  if (S.funded_hero_heading_font_size) hParts.push(`font-size:${S.funded_hero_heading_font_size}`);
+  if (S.funded_hero_heading_font_color) hParts.push(`color:${S.funded_hero_heading_font_color}`);
+  const hStyle = hParts.length ? ` style="${hParts.join(';')}"` : '';
+
   const html = `
     ${renderNav('funded-loans')}
-    <section class="page-hero">
-      <div class="page-hero-bg" style="background-image:url('https://a.storyblok.com/f/291512806597839/482907/8ff4682c73/hero-funded.jpg')"></div>
-      <div class="page-hero-content">
+    <section class="page-hero" style="align-items:${alignItems}">
+      <div class="page-hero-bg" style="background-image:url('${heroImg}');background-position:${bgPos}"></div>
+      <div class="page-hero-content"${contentStyle}>
         <p class="hero-sub">${S.funded_hero_label || 'Our Portfolio'}</p>
-        <h1 class="hero-headline">${S.funded_hero_heading || 'Funded'} <em>${S.funded_hero_heading_italic || 'Loans'}</em></h1>
+        <h1 class="hero-headline"${hStyle}>${S.funded_hero_heading || 'Funded'} <em>${S.funded_hero_heading_italic || 'Loans'}</em></h1>
       </div>
     </section>
     <section class="section bg-cream">
