@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sherpa Capital Group — Boutique Private Equity Real Estate</title>
-<meta name="description" content="Boutique private equity real estate. Bridge debt and equity investments secured by commercial real estate across Chicago's most dynamic neighborhoods. Since 2010.">
+<meta name="description" content="Boutique private equity real estate firm. Bridge debt and equity investments secured by commercial real estate in Chicago. Since 2010.">
 <link rel="canonical" href="https://www.sherpacapitalgroup.com/">
 
 <!-- Open Graph -->
@@ -83,22 +83,28 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet"></noscript>
 <link rel="stylesheet" href="/css/sherpa.css">
-<!-- Storyblok Bridge for Visual Editor -->
-<script src="https://app.storyblok.com/f/storyblok-v2-latest.js"></script>
-<script>
-  const storyblokInstance = new StoryblokBridge();
-  storyblokInstance.on('input', (event) => {
-    // Re-render on live edit
-    if (event.story) renderPage(event.story);
-  });
-  storyblokInstance.on('published', () => location.reload());
-  storyblokInstance.on('change', () => location.reload());
-</script>
+<!-- Preload LCP hero image -->
+<link rel="preload" as="image" href="https://a.storyblok.com/f/291512806597839/719069/0f966975e7/hero-home.jpg/m/filters:format(webp)" type="image/webp">
 </head>
 <body>
 <div id="app"></div>
 <script src="/js/renderer.js"></script>
+<!-- Storyblok Bridge for Visual Editor (deferred — only needed inside Storyblok editor) -->
+<script src="https://app.storyblok.com/f/storyblok-v2-latest.js" defer></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    if (window.StoryblokBridge) {
+      const storyblokInstance = new StoryblokBridge();
+      storyblokInstance.on('input', (event) => {
+        if (event.story) renderPage(event.story);
+      });
+      storyblokInstance.on('published', () => location.reload());
+      storyblokInstance.on('change', () => location.reload());
+    }
+  });
+</script>
 </body>
 </html>

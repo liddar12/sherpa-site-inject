@@ -203,7 +203,7 @@ const renderers = {
         <h3 class="card-title">${card.title || ''}</h3>
         <p class="card-desc">${card.description || ''}</p>
         ${bullets ? `<ul class="card-list">${bullets}</ul>` : ''}
-        ${card.button_text ? `<p style="margin-top:1.5rem"><a href="${card.button_link || '#'}" class="btn-primary" style="padding:0.7rem 2rem;font-size:0.7rem">${card.button_text}</a></p>` : ''}
+        ${card.button_text ? `<p style="margin-top:1.5rem"><a href="${card.button_link || '#'}" class="btn-primary" style="padding:0.7rem 2rem;font-size:0.7rem">${card.button_text}${card.button_text.toLowerCase().includes('learn more') ? ' about ' + card.title : ''}</a></p>` : ''}
       </div>`;
     }).join('');
     const hStyle = headingStyle(blok, '');
@@ -312,7 +312,7 @@ function renderNav(currentSlug) {
 
   const navLogoH = SITE.nav_logo_height || '70px';
   return `<nav class="nav scrolled" id="nav">
-    <a href="/" class="nav-logo desktop-only"><img src="https://a.storyblok.com/f/291512806597839/38141/e7e79645aa/logo.png" alt="${SITE.site_name || 'Sherpa Capital Group'}" style="height:${navLogoH};width:auto;filter:brightness(0) invert(1);"></a>
+    <a href="/" class="nav-logo desktop-only"><img src="${sbWebP('https://a.storyblok.com/f/291512806597839/38141/e7e79645aa/logo.png')}" alt="${SITE.site_name || 'Sherpa Capital Group'}" style="height:${navLogoH};width:auto;filter:brightness(0) invert(1);"></a>
     <ul class="nav-links" id="navLinks">${navLinks}</ul>
     <button class="nav-toggle" aria-label="Toggle navigation" onclick="toggleNav()"><span></span><span></span><span></span></button>
   </nav>`;
@@ -565,7 +565,7 @@ async function renderTeamPage() {
         <p class="section-label">${c.role || ''}</p>
         <h2 class="section-heading"${nameStyle}>${m.name.split(' ')[0]} <em>${m.name.split(' ').slice(1).join(' ')}</em></h2>
         <div class="content-text">${renderRichtext(c.bio)}</div>
-        ${c.email ? `<p style="font-size:0.85rem;color:var(--slate-400)"><a href="mailto:${c.email}" style="color:var(--forest);text-decoration:none">${c.email}</a> &nbsp;|&nbsp; P ${c.phone || ''}${c.linkedin ? ` &nbsp;|&nbsp; <a href="${c.linkedin}" target="_blank" rel="noopener" class="linkedin-icon">${linkedinIcon(16)}</a>` : ''}</p>` : ''}
+        ${c.email ? `<p style="font-size:0.85rem;color:var(--slate-400)"><a href="mailto:${c.email}" style="color:var(--forest);text-decoration:none">${c.email}</a> &nbsp;|&nbsp; P ${c.phone || ''}${c.linkedin ? ` &nbsp;|&nbsp; <a href="${c.linkedin}" target="_blank" rel="noopener" class="linkedin-icon" aria-label="${m.name} on LinkedIn">${linkedinIcon(16)}</a>` : ''}</p>` : ''}
       </div>
     </div>`;
   }).join('');
