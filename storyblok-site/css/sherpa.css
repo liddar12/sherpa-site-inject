@@ -113,6 +113,9 @@ body{font-family:var(--font-body);color:var(--slate-800);background:var(--cream)
 .footer-links{display:flex;gap:2rem;list-style:none}
 .footer-links a{color:var(--slate-400);text-decoration:none;font-size:0.8rem;transition:color 0.3s}
 .footer-links a:hover{color:var(--white)}
+.linkedin-icon{display:inline-flex;align-items:center;color:var(--slate-400);transition:color 0.3s}
+.linkedin-icon:hover{color:var(--forest-light)}
+.footer-links .linkedin-icon{vertical-align:middle}
 
 /* REVEAL */
 .reveal{opacity:0;transform:translateY(40px);transition:opacity 0.8s var(--ease),transform 0.8s var(--ease)}

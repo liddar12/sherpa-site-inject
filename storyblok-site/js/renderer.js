@@ -88,6 +88,9 @@ function renderRichtext(doc) {
   }).join('\n');
 }
 
+// ── LinkedIn icon SVG ──
+const linkedinIcon = (size = 16) => `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>`;
+
 // ── Component renderers ──
 const renderers = {
   hero(blok) {
@@ -310,6 +313,7 @@ function renderFooter() {
     equity: SITE.nav_label_equity || 'Equity',
     contact: SITE.nav_label_contact || 'Contact',
   };
+  const footerLinkedin = SITE.footer_linkedin ? `<li><a href="${SITE.footer_linkedin}" target="_blank" rel="noopener" class="linkedin-icon" aria-label="LinkedIn">${linkedinIcon(18)}</a></li>` : '';
   return `<footer class="footer"><div class="footer-inner">
     <p class="footer-copy">&copy; ${copy}</p>
     <ul class="footer-links">
@@ -317,6 +321,7 @@ function renderFooter() {
       <li><a href="/loan-parameters">${labels.bridge}</a></li>
       <li><a href="/equity">${labels.equity}</a></li>
       <li><a href="/contact">${labels.contact}</a></li>
+      ${footerLinkedin}
     </ul>
   </div></footer>`;
 }
@@ -531,7 +536,7 @@ async function renderTeamPage() {
         <p class="section-label">${c.role || ''}</p>
         <h2 class="section-heading"${nameStyle}>${m.name.split(' ')[0]} <em>${m.name.split(' ').slice(1).join(' ')}</em></h2>
         <div class="content-text">${renderRichtext(c.bio)}</div>
-        ${c.email ? `<p style="font-size:0.85rem;color:var(--slate-400)"><a href="mailto:${c.email}" style="color:var(--forest);text-decoration:none">${c.email}</a> &nbsp;|&nbsp; P ${c.phone || ''}</p>` : ''}
+        ${c.email ? `<p style="font-size:0.85rem;color:var(--slate-400)"><a href="mailto:${c.email}" style="color:var(--forest);text-decoration:none">${c.email}</a> &nbsp;|&nbsp; P ${c.phone || ''}${c.linkedin ? ` &nbsp;|&nbsp; <a href="${c.linkedin}" target="_blank" rel="noopener" class="linkedin-icon">${linkedinIcon(16)}</a>` : ''}</p>` : ''}
       </div>
     </div>`;
   }).join('');
