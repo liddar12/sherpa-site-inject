@@ -15,7 +15,8 @@ const SB_VERSION = isStoryblokEditor ? 'draft' : 'published';
 // ── WebP image optimization via Storyblok Image Service ──
 function sbWebP(url) {
   if (!url || !url.includes('a.storyblok.com')) return url;
-  // Already has filters — append format(webp)
+  // Normalize S3 URLs to CDN URLs (image service only works on CDN)
+  url = url.replace('https://s3.amazonaws.com/a.storyblok.com/', 'https://a.storyblok.com/');
   if (url.includes('/m/')) return url.replace(/\/?$/, '') + '/filters:format(webp)';
   return url + '/m/filters:format(webp)';
 }
