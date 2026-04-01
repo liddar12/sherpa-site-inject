@@ -97,7 +97,16 @@ const renderers = {
     const logoH = blok.logo_size || '200px';
     const logoOffParts = ['filter:brightness(0) invert(1)', `height:${logoH}`, 'width:auto'];
     if (blok.logo_vertical_offset) logoOffParts.push(`transform:translateY(${blok.logo_vertical_offset})`);
-    const logo = blok.show_logo ? `<div class="hero-logo-mark"><img src="https://a.storyblok.com/f/291512806597839/38141/e7e79645aa/logo.png" alt="Sherpa Capital Group" style="${logoOffParts.join(';')}"></div>` : '';
+    // Hero logo visibility: desktop-only, mobile-only, or both
+    let logoClass = '';
+    if (blok.show_logo) {
+      const showDesktop = blok.show_logo_desktop !== false; // default true unless explicitly false
+      const showMobile = blok.show_logo_mobile !== false;
+      if (showDesktop && !showMobile) logoClass = ' desktop-only';
+      else if (!showDesktop && showMobile) logoClass = ' mobile-only';
+      // both true = no class (always visible); both false = won't reach here since show_logo would be off
+    }
+    const logo = blok.show_logo ? `<div class="hero-logo-mark${logoClass}"><img src="https://a.storyblok.com/f/291512806597839/38141/e7e79645aa/logo.png" alt="Sherpa Capital Group" style="${logoOffParts.join(';')}"></div>` : '';
 
     const label = blok.label ? `<p class="hero-sub">${blok.label}</p>` : '';
     const hStyle = headingStyle(blok, '');
@@ -123,6 +132,9 @@ const renderers = {
     const sectionStyle = sectionParts.length ? sectionParts.join(';') : '';
     const contentStyle = contentParts.length ? ` style="${contentParts.join(';')}"` : '';
 
+    // Divider also follows the same visibility as the logo
+    const divider = blok.show_logo ? `<div class="hero-divider${logoClass}"></div>` : '';
+
     return `
     <section class="page-hero${blok.show_logo ? ' tall' : ''}" style="${sectionStyle}"${sbAttr(blok)}>
       <div class="page-hero-bg" style="background-image:url('${bgImg}');background-position:${bgPos}"></div>
@@ -130,7 +142,7 @@ const renderers = {
         ${logo}
         ${label}
         <h1 class="hero-headline"${hStyle}>${blok.headline || ''}<br><em>${blok.headline_italic || ''}</em></h1>
-        ${blok.show_logo ? '<div class="hero-divider"></div>' : ''}
+        ${divider}
         ${blok.tagline ? `<p class="hero-tagline"${taglineStyle}>${blok.tagline}</p>` : ''}
       </div>
     </section>`;
@@ -283,7 +295,7 @@ function renderNav(currentSlug) {
 
   const navLogoH = SITE.nav_logo_height || '70px';
   return `<nav class="nav scrolled" id="nav">
-    <a href="/" class="nav-logo"><img src="https://a.storyblok.com/f/291512806597839/38141/e7e79645aa/logo.png" alt="${SITE.site_name || 'Sherpa Capital Group'}" style="height:${navLogoH};width:auto;filter:brightness(0) invert(1);"></a>
+    <a href="/" class="nav-logo desktop-only"><img src="https://a.storyblok.com/f/291512806597839/38141/e7e79645aa/logo.png" alt="${SITE.site_name || 'Sherpa Capital Group'}" style="height:${navLogoH};width:auto;filter:brightness(0) invert(1);"></a>
     <ul class="nav-links" id="navLinks">${navLinks}</ul>
     <button class="nav-toggle" aria-label="Toggle navigation" onclick="toggleNav()"><span></span><span></span><span></span></button>
   </nav>`;
