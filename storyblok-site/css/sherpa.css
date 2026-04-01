@@ -30,7 +30,7 @@ body{font-family:var(--font-body);color:var(--slate-800);background:var(--cream)
 .hero-logo-mark{margin-bottom:1.5rem}
 .hero-headline{font-family:var(--font-display);font-size:clamp(2.2rem,5vw,3.8rem);font-weight:400;color:var(--white);line-height:1.15;margin-bottom:0.5rem;letter-spacing:-0.01em}
 .hero-headline em{font-style:italic;color:var(--forest-light)}
-.hero-sub{font-family:var(--font-body);font-size:0.8rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--slate-400);margin-bottom:1.5rem}
+.hero-sub{font-family:var(--font-body);font-size:0.8rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--forest-light);font-weight:600;margin-bottom:1.5rem}
 .hero-divider{width:60px;height:1px;background:var(--forest-light);margin:0 auto 1.5rem;animation:divGrow 1.5s var(--ease) 0.5s both}
 @keyframes divGrow{from{width:0;opacity:0}to{width:60px;opacity:1}}
 .hero-tagline{font-size:1rem;color:rgba(255,255,255,0.7);max-width:520px;margin:0 auto;line-height:1.7}
