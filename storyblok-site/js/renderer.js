@@ -727,15 +727,24 @@ function initScrollBehavior() {
 }
 
 function initRevealAnimations() {
-  const ro = new IntersectionObserver((entries) => {
-    entries.forEach((en, i) => {
-      if (en.isIntersecting) {
-        setTimeout(() => en.target.classList.add('visible'), i * 80);
-        ro.unobserve(en.target);
-      }
-    });
-  }, { threshold: 0.15 });
-  document.querySelectorAll('.reveal').forEach(el => ro.observe(el));
+  requestAnimationFrame(() => {
+    const ro = new IntersectionObserver((entries) => {
+      entries.forEach((en, i) => {
+        if (en.isIntersecting) {
+          setTimeout(() => en.target.classList.add('visible'), i * 80);
+          ro.unobserve(en.target);
+        }
+      });
+    }, { threshold: 0.15 });
+    document.querySelectorAll('.reveal').forEach(el => ro.observe(el));
+
+    // Safety net: force-show any reveal elements that IO missed (iOS Safari fallback)
+    setTimeout(() => {
+      document.querySelectorAll('.reveal:not(.visible)').forEach(el => {
+        el.classList.add('visible');
+      });
+    }, 3000);
+  });
 }
 
 window.toggleNav = function() {
